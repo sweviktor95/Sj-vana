@@ -1326,6 +1326,22 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figMinute(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 330 300" width="330" height="300" role="img" aria-label="En grad är 60 minuter, en minut är en sjömil"><rect width="330" height="300" rx="4" fill="var(--sea-soft)"/>`;
+ const x=70,y0=270,y1=30,h=(y0-y1)/60;
+ s+=`<rect x="${x}" y="${y1}" width="14" height="${y0-y1}" fill="var(--surface)" stroke="var(--ink)"/>`;
+ for(let m=0;m<=60;m++){const y=y0-m*h,L=m%10===0?14:m%5===0?9:5;s+=`<line x1="${x}" y1="${y.toFixed(1)}" x2="${x-L}" y2="${y.toFixed(1)}" stroke="var(--ink)"/>`;if(m%10===0)s+=T(x-18,y+4,m===0?"65°00'":m===60?"66°00'":String(m).padStart(2,'0')+"'",'text-anchor="end"')}
+ s+=T(x+22,y1+12,'1 grad','font-weight="700"')+T(x+22,y1+26,'= 60 minuter')+T(x+22,y1+40,'= 60 sjömil');
+ const ya=y0-36*h,yb=y0-37*h;s+=`<rect x="${x}" y="${yb.toFixed(1)}" width="14" height="${h.toFixed(1)}" fill="#c0392b"/>`;
+ const bx=176,by=110,bw=34,bh=150;
+ s+=`<line x1="${x+14}" y1="${yb.toFixed(1)}" x2="${bx}" y2="${by}" stroke="#c0392b" stroke-dasharray="3 2"/><line x1="${x+14}" y1="${ya.toFixed(1)}" x2="${bx}" y2="${by+bh}" stroke="#c0392b" stroke-dasharray="3 2"/>`;
+ s+=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="var(--surface)" stroke="#c0392b" stroke-width="2"/>`;
+ for(let t=0;t<=10;t++){const y=by+bh-t*bh/10;s+=`<line x1="${bx}" y1="${y.toFixed(1)}" x2="${bx+(t%5===0?18:10)}" y2="${y.toFixed(1)}" stroke="var(--ink)"/>`}
+ s+=T(bx+42,by+12,'1 minut',`font-weight="700" fill="#c0392b"`)+T(bx+42,by+26,'= 1 sjömil',`fill="#c0392b"`)+T(bx+42,by+40,'= 1 852 m',`fill="#c0392b"`);
+ s+=T(bx+42,by+bh-30,'Varje litet')+T(bx+42,by+bh-16,'streck = 0,1 M')+T(bx+42,by+bh-2,'≈ 185 m');
+ return s+`</svg>`}
+
 function figTwoScales(){
  const k=2.4,x0=16,T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--ink)" ${o}>${t}</text>`;
  let s=`<svg viewBox="0 0 330 216" width="330" height="216" role="img" aria-label="Sjökortets och kompassens gradskalor jämförda"><rect width="330" height="216" rx="4" fill="var(--sea-soft)"/>`;
@@ -1904,11 +1920,20 @@ ${kompassWidget()}
  {id:'f-4-1',t:'Var är jag? Latitud och longitud',b:`
 <p>Jorden är indelad i ett rutnät. Varje plats har en adress i två delar:</p><ul><li><b>Latitud:</b> hur långt norr om ekvatorn du är. Luleå ligger på ungefär 65° nord.</li><li><b>Longitud:</b> hur långt öster om Greenwich i London du är. Luleå ligger på ungefär 22° öst.</li></ul>
 <div class="fig">${figLatLon()}</div>
-<p>Varje grad delas i 60 minuter. En position kan skrivas 65°36,4'N 022°11,3'E. Latituden skrivs alltid först.</p>
+<h3>Grader och minuter</h3>
+<p>Varje grad delas i <b>60 minuter</b>, precis som en timme delas i 60 minuter. Det har ingenting med tid att göra, det är bara ett sätt att dela upp en grad i mindre bitar. Minuter skrivs med ett litet streck: 36' betyder 36 minuter.</p>
+<div class="fig">${figMinute()}</div>
+<ul><li>Från ekvatorn till nordpolen är det 90 grader latitud.</li>
+<li><b>En grad latitud</b> är 60 minuter, och det är 60 sjömil, ungefär 111 km.</li>
+<li><b>En minut latitud</b> är alltså precis <b>en sjömil</b>, 1 852 meter. Det är därför sjömilen är så praktisk: den passar exakt med sjökortets rutnät.</li>
+<li>Minuterna delas i <b>tiondelar</b>. 36,4' betyder 36 minuter och 4 tiondelar. En tiondels minut är en tiondels sjömil, ungefär 185 meter.</li></ul>
+<p>En position kan skrivas <b>65°36,4'N 022°11,3'E</b>. Det betyder 65 grader och 36,4 minuter nord, och 22 grader och 11,3 minuter öst. Latituden skrivs alltid först.</p>
 <h3>Det smarta med sjömilen</h3><p>En minut latitud är exakt en sjömil. Därför mäter du avstånd på sjökortets <b>vänstra eller högra kant</b> (latitudskalan) med en passare: lägg passaren mellan två punkter och flytta den till kanten, så kan du läsa av hur många minuter, alltså sjömil, det är.</p>
 <p>Latitudskalan finns på både vänster och höger kant, och de är likadana. Du kan alltså välja den som ligger närmast. Mät i ungefär samma höjd i kortet som sträckan du mäter, eftersom skalan ändras lite norrut och söderut i de flesta sjökort. Många detaljerade kort har dessutom en <b>avståndsskala</b> i sjömil eller meter som du också kan använda.</p>
 <p class="key"><b>Kom ihåg:</b> Mät aldrig avstånd på kortets över- eller underkant. Där är minuterna kortare.</p>`,
- c:[{q:'Var på sjökortet mäter du avstånd i sjömil?',o:['På vänster eller höger kant','På överkanten','På underkanten','Var som helst'],a:0,e:'En minut latitud = en sjömil.'},
+ c:[{q:'Hur långt är en minut latitud?',o:['En sjömil, 1 852 m','En kilometer','Den sträcka man åker på en minut','Tio sjömil'],a:0,e:'En grad är 60 minuter och 60 sjömil. En minut är därför en sjömil.'},
+    {q:'Två platser ligger på latituderna 65°30,0\'N och 65°32,5\'N, rakt norr om varandra. Hur långt är det mellan dem?',o:['2,5 M','25 M','0,25 M','2,5 km'],a:0,e:'Skillnaden är 2,5 minuter, och varje minut är en sjömil.'},
+    {q:'Var på sjökortet mäter du avstånd i sjömil?',o:['På vänster eller höger kant','På överkanten','På underkanten','Var som helst'],a:0,e:'En minut latitud = en sjömil.'},
     {q:'Vad skrivs först i en position?',o:['Latitud (nord/syd)','Longitud (öst/väst)','Djupet','Klockslaget'],a:0,e:'Till exempel 65°36\'N 022°11\'E.'}]},
  {id:'f-4-2',t:'Kurs och bäring',b:`
 <div class="fig">${figRoseFull(45)}</div>
