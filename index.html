@@ -1326,6 +1326,18 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figFarledSverige(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ const land=[[150,16],[166,24],[160,52],[146,78],[134,104],[132,132],[124,160],[128,190],[118,218],[120,246],[108,268],[100,286],[72,292],[56,282],[50,258],[44,232],[40,206],[52,180],[64,140],[84,96],[110,56],[132,24]].map(p=>p.join(',')).join(' ');
+ let s=`<svg viewBox="0 0 300 310" width="300" height="310" role="img" aria-label="Farledens huvudriktning runt Sverige"><defs><marker id="frA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--sea)"/></marker></defs><rect width="300" height="310" rx="4" fill="var(--sea-soft)"/>`;
+ s+=`<polygon points="${land}" fill="#efe3b6" stroke="#8b7a4a" stroke-width="1.5"/>`;
+ s+=`<path d="M30 200 C26 240 32 280 60 302 C90 306 112 296 124 270 C136 240 136 200 142 160 C146 120 160 80 176 40 L180 26" fill="none" stroke="var(--sea)" stroke-width="3" stroke-dasharray="8 5" marker-end="url(#frA)"/>`;
+ s+=T(4,196,'Strömstad','font-weight="700"')+T(184,30,'Haparanda','font-weight="700"')+T(130,300,'Skåne')+T(150,192,'Stockholm');
+ s+=`<circle cx="42" cy="202" r="3.5" fill="var(--ink)"/><circle cx="168" cy="22" r="3.5" fill="var(--ink)"/><circle cx="130" cy="188" r="2.5" fill="var(--ink)"/>`;
+ s+=T(196,120,'Huvudriktning:','font-weight="700" fill="var(--sea)"')+T(196,134,'moturs runt','fill="var(--sea)"')+T(196,148,'Sverige','fill="var(--sea)"');
+ s+=T(8,22,'Förenklad karta','fill="var(--muted)"');
+ return s+`</svg>`}
+
 function figSectorChart(){
  const L={x:170,y:46},rad=a=>a*Math.PI/180;
  // bearings FROM the light (direction rays point): white 180±6, red 186..222 (to the west side), green 138..174
@@ -1730,10 +1742,15 @@ ${restidWidget()}
 <div class="figrow">${lateral('bb')}${lateral('sb')}</div>
 <h3>Regeln</h3><p>När du åker <b>in mot land, hamn eller en sjö</b> ska du ha:</p><ul><li><b>röda märken till vänster</b> (babord). De har ett platt toppmärke, en cylinder.</li><li><b>gröna märken till höger</b> (styrbord). De har ett spetsigt toppmärke, en kon.</li></ul>
 <p>Åker du <b>ut mot havet</b> blir det tvärtom: rött till höger och grönt till vänster.</p>
-<p>Det här kallas farledens riktning. Den går normalt inifrån havet och in mot land. I sjökortet finns ibland en pil som visar riktningen där det inte är självklart.</p>
+<p>Det här kallas <b>farledens riktning</b>. Den går normalt från öppet hav in mot land, hamn eller en sjö.</p>
+<h3>Längs kusten</h3>
+<p>Ute längs kusten, där det inte är självklart vad som är "in", finns en <b>huvudriktning</b>. I svenska farvatten går den <b>moturs runt Sverige</b>: från norska gränsen vid Strömstad, söderut längs västkusten, runt Skåne och sedan norrut längs ostkusten upp till Haparanda vid finska gränsen.</p>
+<div class="fig">${figFarledSverige()}</div>
+<p>Kör du längs ostkusten norrut, eller längs västkusten söderut, går du alltså i farledens riktning. Då ska de röda märkena vara till vänster. I sjökortet finns ibland en pil som visar riktningen där det inte är självklart.</p>
 <h3>På natten</h3><p>Många märken har en lampa. Röda märken blinkar rött och gröna blinkar grönt, så regeln är densamma. Exakt hur de blinkar lär du dig i kustskepparkursen.</p>
-<p class="key"><b>Minnesregel:</b> På väg hem in mot land: rött till vänster.</p>`,
- c:[{q:'Du åker in mot hamnen. Var ska de röda märkena vara?',o:['Till vänster','Till höger','Rakt fram','Spelar ingen roll'],a:0,e:'Rött till vänster på väg in.'},
+<p class="key"><b>Minnesregel: färg mot färg.</b> När du kör i farledens riktning, alltså in mot land, ska märkena ha samma färg som lanternan på samma sida av båten. Din röda lanterna sitter på babord, och där ska de röda märkena vara. Din gröna lanterna sitter på styrbord, och där ska de gröna märkena vara.</p>`,
+ c:[{q:'Du kör norrut längs ostkusten ute vid havsbandet. På vilken sida ska de röda märkena vara?',o:['Till vänster (babord)','Till höger (styrbord)','Det beror på vinden','Det finns inga märken där'],a:0,e:'Farledens huvudriktning går moturs runt Sverige, alltså norrut längs ostkusten. Då är rött om babord.'},
+    {q:'Du åker in mot hamnen. Var ska de röda märkena vara?',o:['Till vänster','Till höger','Rakt fram','Spelar ingen roll'],a:0,e:'Rött till vänster på väg in.'},
     {q:'Du åker ut från hamnen mot havet. Var ska de gröna märkena vara?',o:['Till vänster','Till höger','Bakom dig','Spelar ingen roll'],a:0,e:'Ut mot havet blir det spegelvänt.'},
     {q:'Vilket toppmärke har det gröna märket?',o:['En spetsig kon','En platt cylinder','Två klot','Ett kryss'],a:0,e:'Grönt = spets, rött = platt.'}]},
  {id:'f-2-2',t:'Kardinalmärken: gula och svarta',b:`
