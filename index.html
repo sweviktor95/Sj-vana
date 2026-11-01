@@ -1326,6 +1326,18 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figMissvisning(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 330 290" width="330" height="290" role="img" aria-label="Geografiska och magnetiska nordpolen sedda från Sverige"><rect width="330" height="290" rx="4" fill="var(--sea-soft)"/>`;
+ s+=`<circle cx="165" cy="175" r="105" fill="#cfe3ef" stroke="var(--ink)" stroke-width="1.5"/>`;
+ s+=`<line x1="165" y1="66" x2="165" y2="80" stroke="var(--ink)" stroke-width="2"/><circle cx="165" cy="70" r="5" fill="var(--ink)"/>`+T(40,40,'Geografiska nordpolen','font-weight="700"')+T(40,54,'(sjökortet utgår härifrån)','font-size="9.5"')+`<line x1="120" y1="58" x2="160" y2="68" stroke="var(--muted)"/>`;
+ s+=`<circle cx="196" cy="82" r="5" fill="#7a4f8a"/>`+T(204,78,'Magnetiska',`font-weight="700" fill="#7a4f8a"`)+T(204,92,'nordpolen',`font-weight="700" fill="#7a4f8a"`);
+ s+=`<circle cx="138" cy="150" r="5" fill="#c0392b"/>`+T(70,170,'Du i Sverige',`font-weight="700" fill="#c0392b"`);
+ s+=`<line x1="138" y1="150" x2="165" y2="70" stroke="var(--ink)" stroke-width="2"/><line x1="138" y1="150" x2="196" y2="82" stroke="#7a4f8a" stroke-width="2" stroke-dasharray="6 4"/>`;
+ s+=`<path d="M153.3 104.5 A48 48 0 0 1 169.1 113.5" fill="none" stroke="#c46d00" stroke-width="3"/>`+T(184,128,'missvisning',`font-weight="700" fill="#c46d00"`);
+ s+=T(8,280,'Förenklad bild, inte skalenlig.','fill="var(--muted)" font-size="9.5"');
+ return s+`</svg>`}
+
 const EXDEV=[[0,0],[30,2],[60,3],[90,3],[120,2],[150,0],[180,-1],[210,-2],[240,-3],[270,-3],[300,-2],[330,-1]];
 function figThreeNorths(){
  const O={x:150,y:220},L=180,ray=(deg,col,w,dash)=>{const t=deg*Math.PI/180;return `<line x1="${O.x}" y1="${O.y}" x2="${(O.x+Math.sin(t)*L).toFixed(1)}" y2="${(O.y-Math.cos(t)*L).toFixed(1)}" stroke="${col}" stroke-width="${w}" ${dash?'stroke-dasharray="6 4"':''}/>`};
@@ -1835,7 +1847,15 @@ ${kompassWidget()}
 <li>Kompassen behöver ingen ström och kan inte störas av satellitsignaler.</li>
 <li>Om plottern slocknar, i mörker eller i dimma, är kompassen och sjökortet det du har kvar.</li>
 <li>Med kompassen kan du styra en kurs du har räknat fram i sjökortet.</li></ul>
-<h3>Varför kompassen inte visar exakt rätt</h3><ul><li><b>Missvisning:</b> kompassen pekar mot den magnetiska nordpolen, som inte ligger på samma ställe som den "riktiga" nordpolen på kartan. I Sverige är skillnaden några grader. Den står i sjökortets kompassros.</li>
+<h3>Missvisning: jorden har två nordpoler</h3>
+<p>Jorden har två olika nordpoler. Den <b>geografiska nordpolen</b> är där jordaxeln går ut, och alla kartor och sjökort utgår från den. Den <b>magnetiska nordpolen</b> är dit kompassnålen dras. Den ligger inte på samma ställe, utan en bit därifrån, och den flyttar sig dessutom lite varje år.</p>
+<div class="fig">${figMissvisning()}</div>
+<p>Tänk dig att du står i Sverige och pekar mot båda polerna samtidigt, med ena handen mot den geografiska och andra handen mot den magnetiska. Händerna pekar nästan åt samma håll, men inte riktigt. Vinkeln mellan dem är <b>missvisningen</b>.</p>
+<ul><li>Missvisningen är olika på olika platser, eftersom vinkeln mot polerna ändras beroende på var du står.</li>
+<li>Den ändras också långsamt med åren, eftersom den magnetiska polen flyttar sig.</li>
+<li>I Sverige är den i dag några grader <b>ost</b>: kompassen pekar lite öster om den riktiga norr.</li>
+<li>Du behöver inte räkna ut den själv. Den står i sjökortets <b>kompassros</b>, tillsammans med vilket år den gäller och hur mycket den ändras per år.</li></ul>
+<h3>Deviation: båten stör kompassen</h3><ul>
 <li><b>Deviation:</b> järn och elektronik i båten stör kompassen. Felet är olika stort beroende på åt vilket håll båten pekar.</li></ul>
 <h3>Deviationstabellen gör du själv</h3>
 <p>Deviationen är unik för varje båt och varje kompassplacering. Därför följer det inte med någon färdig tabell från fabriken. Du tar fram den själv, eller med hjälp av en kompassjusterare:</p>
