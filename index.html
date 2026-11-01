@@ -1326,6 +1326,19 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figTwoScales(){
+ const k=2.4,x0=16,T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--ink)" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 330 216" width="330" height="216" role="img" aria-label="Sjökortets och kompassens gradskalor jämförda"><rect width="330" height="216" rx="4" fill="var(--sea-soft)"/>`;
+ s+=T(x0,22,'Sjökortet (räknar från rättvisande nord)','font-weight="700"');
+ s+=`<rect x="${x0}" y="30" width="${120*k}" height="36" fill="var(--surface)" stroke="var(--ink)"/>`;
+ for(let d=0;d<=120;d+=5){const x=x0+d*k;s+=`<line x1="${x}" y1="66" x2="${x}" y2="${d%10?58:50}" stroke="var(--ink)"/>`;if(d%30===0)s+=T(x,46,String(d).padStart(3,'0'),'text-anchor="middle"')}
+ s+=T(x0,104,'Kompassen (räknar från magnetisk nord, 6° O)',`font-weight="700" fill="#7a4f8a"`);
+ s+=`<rect x="${x0}" y="112" width="${120*k}" height="36" fill="var(--surface)" stroke="#7a4f8a"/>`;
+ for(let d=-5;d<=114;d+=5){if(d<0)continue;const x=x0+(d+6)*k;if(x>x0+120*k)continue;s+=`<line x1="${x}" y1="112" x2="${x}" y2="${d%10?120:128}" stroke="#7a4f8a"/>`;if(d%30===0)s+=T(x,142,String(d).padStart(3,'0'),`text-anchor="middle" fill="#7a4f8a"`)}
+ const xc=x0+96*k;s+=`<line x1="${xc}" y1="26" x2="${xc}" y2="152" stroke="#c0392b" stroke-width="2.5"/>`+T(xc+4,82,'096 i kortet',`fill="#c0392b" font-weight="700"`)+T(xc-6,166,'090 på kompassen',`fill="#c0392b" font-weight="700" text-anchor="middle"`);
+ s+=`<line x1="${x0}" y1="66" x2="${x0+6*k}" y2="112" stroke="#7a4f8a" stroke-dasharray="3 2"/>`+T(x0,188,'Kompassens noll ligger redan 6° åt höger.')+T(x0,204,'Därför visar den 6 för lite för samma riktning.');
+ return s+`</svg>`}
+
 function figMissvisning(){
  const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
  let s=`<svg viewBox="0 0 330 290" width="330" height="290" role="img" aria-label="Geografiska och magnetiska nordpolen sedda från Sverige"><rect width="330" height="290" rx="4" fill="var(--sea-soft)"/>`;
@@ -1917,13 +1930,20 @@ ${kompassWidget()}
 <p>Kurserna har egna namn: <b>KK</b> kompasskurs (det kompassen visar), <b>MK</b> magnetisk kurs och <b>RK</b> rättvisande kurs (det du ritar i kortet). Tänk på det som en trappa med tre steg:</p>
 <ul><li><b>Från kompassen till kortet</b> (KK → MK → RK): lägg till deviationen och sedan missvisningen. <b>Ost är plus och väst är minus.</b></li>
 <li><b>Från kortet till kompassen</b> (RK → MK → KK): gå trappan åt andra hållet och <b>byt tecken</b>. Ost dras ifrån och väst läggs till.</li></ul>
+<h3>Förstå i stället för att memorera</h3>
+<p>Det går att resonera sig fram till plus eller minus. Med <b>ostlig</b> missvisning pekar kompassen lite åt höger om den riktiga norr. Kompassen börjar alltså räkna sina grader en bit åt höger, och därför visar den <b>för lite</b> för samma riktning.</p>
+<div class="fig">${figTwoScales()}</div>
+<ul><li><b>Ost:</b> kompassen visar för lite. Kompass till kort: lägg till. Kort till kompass: dra ifrån.</li>
+<li><b>Väst:</b> kompassen visar för mycket. Kompass till kort: dra ifrån. Kort till kompass: lägg till.</li></ul>
+<p>Samma sak gäller deviationen. Är den 3° O visar kompassen 3 grader för lite på den kursen.</p>
+<p class="key"><b>Fråga dig själv:</b> visar kompassen för lite eller för mycket? Då vet du om du ska lägga till eller dra ifrån, utan att behöva komma ihåg någon regel.</p>
 <h3>Exempel 1: Från sjökortet till kompassen</h3>
 <p>Du ska köra från hamnen till fyren. Hur ska du styra på kompassen?</p>
 <div class="fig">${figExChart()}</div>
 <p><b>Steg 1. Mät kursen i sjökortet.</b> Lägg gradskivan mellan hamnen och fyren. Den visar <b>096°</b>. Det är rättvisande kurs, RK.</p>
-<p><b>Steg 2. Ta bort missvisningen.</b> Kompassrosen i kortet säger 6° O. Från kortet mot kompassen byter du tecken, så ost dras ifrån: 096 − 6 = <b>090°</b>. Det är magnetisk kurs, MK.</p>
+<p><b>Steg 2. Ta bort missvisningen.</b> Kompassrosen i kortet säger 6° O. Med ostlig missvisning visar kompassen för lite, så du drar ifrån: 096 − 6 = <b>090°</b>. Det är magnetisk kurs, MK.</p>
 <div class="fig">${figDevCard(90)}</div>
-<p><b>Steg 3. Ta bort deviationen.</b> Leta upp 090° i din deviationstabell. Där står 3° O. Ost dras ifrån igen: 090 − 3 = <b>087°</b>. Det är kompasskurs, KK.</p>
+<p><b>Steg 3. Ta bort deviationen.</b> Leta upp 090° i din deviationstabell. Där står 3° O, så kompassen visar 3 grader för lite på den kursen. Dra ifrån igen: 090 − 3 = <b>087°</b>. Det är kompasskurs, KK.</p>
 <div class="fig">${figBoatCompass(87)}</div>
 <p><b>Steg 4. Styr.</b> Sväng tills 087 står vid styrstrecket. Då går båten 096° i sjökortet.</p>
 <p class="key"><b>Kontrollera baklänges:</b> 087 + 3 (dev O) = 090, och 090 + 6 (miss O) = 096. Stämmer med kortet.</p>
