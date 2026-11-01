@@ -1660,10 +1660,12 @@ ${roseWidget()}
 <p>En vanlig fyr lyser likadant åt alla håll. En <b>sektorfyr</b> lyser med <b>olika färger åt olika håll</b>. Vilken färg du ser beror på var du befinner dig. Sektorfyrar är mycket vanliga i den svenska skärgården och används för att leda båtar rätt.</p>
 <div class="fig">${figSectorChart()}</div>
 <ul><li><b>Vit sektor:</b> här går leden. Ser du vitt ljus ligger du rätt.</li>
-<li><b>Röd och grön sektor:</b> du har kommit ut på sidan av leden, mot grundare vatten. Styr tillbaka tills du ser vitt igen.</li>
+<li><b>Röd och grön sektor:</b> du har kommit ut på sidan av leden, mot grundare vatten. Styr tillbaka tills du ser vitt igen. Se minnesregeln nedan.</li>
 <li>I sjökortet ritas sektorerna som <b>färgade bågar</b> runt fyren, med bokstäverna W (vit), R (röd) och G (grön). <b>Streckade linjer</b> visar var gränserna mellan sektorerna går.</li>
 <li>Vid fyren står ljusets karaktär, till exempel <code>Oc WRG 6s 12m 9M</code>: ockulterande, vitt, rött och grönt, 6 sekunders period, 12 meter högt och syns 9 sjömil.</li></ul>
 <p>På dagen syns inte färgerna. Sektorerna är därför främst till hjälp i mörker, men du kan ändå använda sjökortet för att se var leden går. Hur du navigerar efter sektorfyrar övas i kustskepparkursen och i nattpraktiken.</p>
+<p class="key"><b>Minnesregel: färg mot färg.</b> Ser du rött eller grönt ljus från en sektorfyr, styr så att fyren hamnar på samma sida som din lanterna med samma färg. Ser du <b>rött</b>, styr så att fyren hamnar på din <b>babordssida</b> (röd lanterna). Ser du <b>grönt</b>, styr så att fyren hamnar på din <b>styrbordssida</b> (grön lanterna). Regeln gäller både när du kör mot fyren och när du kör ifrån den. Fortsätt tills ljuset blir vitt.</p>
+<p class="foot" style="margin:0 0 10px">Regeln bygger på att sektorerna är ordnade som vanligt, med rött till vänster och grönt till höger när du kör mot fyren. Kontrollera alltid sektorerna i sjökortet.</p>
 <h3>Djupet beror på vattenståndet</h3>
 <p>Djupsiffrorna gäller vid kortets <b>referensnivå</b>, som står i kortets rubrik. När vattnet står lägre än referensnivån är det grundare än kortet visar, och när det står högre är det djupare. Hur vattenståndet varierar går vi igenom i lektionen om dimma och vattenstånd i väderavsnittet.</p>
 <h3>Skala</h3><p>Skalan visar hur mycket kortet har förminskat verkligheten. 1:50 000 betyder att 1 cm i kortet är 500 meter i verkligheten. Ett kort med <b>stor skala</b> (t.ex. 1:25 000) visar ett litet område med många detaljer. Ett kort med <b>liten skala</b> (t.ex. 1:250 000) visar ett stort område med få detaljer, och där kan små stenar och grund saknas. Använd alltid det mest detaljerade kortet där du kör.</p>
@@ -1679,7 +1681,8 @@ ${roseWidget()}
 <p><b>Båtsportkort</b> är en egen serie i A3-format för fritidsbåtar. De har namn efter området, till exempel "Stockholm Norra", och samma innehåll som de vanliga korten.</p>
 <h3>Lita lagom</h3><p>Mycket i skärgården är uppmätt för länge sedan. Utanför farlederna kan det finnas grund som inte är utmärkta. Håll dig till farlederna när du är osäker.</p>
 <p class="key"><b>Kom ihåg:</b> Alla symboler förklaras i häftet <b>Kort 1</b>. Ändringar i sjökorten publiceras av Sjöfartsverket i <b>Ufs</b> (Underrättelser för sjöfarande).</p>`,
- c:[{q:'Du ser rött ljus från en sektorfyr. Vad betyder det?',o:['Du har kommit ut på sidan av leden, mot grundare vatten','Du ligger mitt i leden','Fyren är trasig','Du ska stanna'],a:0,e:'Den vita sektorn visar leden. Styr tillbaka tills du ser vitt.'},
+ c:[{q:'Du kör ifrån en sektorfyr och ser rött ljus. Hur styr du?',o:['Så att fyren hamnar på din babordssida, färg mot färg','Så att fyren hamnar på din styrbordssida','Rakt bort från fyren','Du stannar och väntar'],a:0,e:'Röd lanterna sitter på babord. Färg mot färg gäller både mot och från fyren.'},
+    {q:'Du ser rött ljus från en sektorfyr. Vad betyder det?',o:['Du har kommit ut på sidan av leden, mot grundare vatten','Du ligger mitt i leden','Fyren är trasig','Du ska stanna'],a:0,e:'Den vita sektorn visar leden. Styr tillbaka tills du ser vitt.'},
     {q:'Vilket kort visar mest detaljer?',o:['6163','616','61','6'],a:0,e:'Fyra siffror är ett specialkort, oftast i skala 1:25 000.'},
     {q:'Vad betyder ett litet + i sjökortet?',o:['En sten under vattenytan','Ett sjukhus','En hamn','En fyr'],a:0,e:'Undervattenssten. Håll avstånd.'},
     {q:'Kortet har skala 1:50 000. Hur långt är 2 cm i verkligheten?',o:['1 km','100 m','10 km','2 km'],a:0,e:'1 cm = 500 m.'},
@@ -2122,8 +2125,11 @@ LESSONS.kust=[
 <p>En <b>sektorfyr</b> visar olika färger i olika riktningar. Den vita sektorn leder normalt genom farleden, och röd och grön sektor varnar för grundare vatten på sidorna. I sjökortet står t.ex. <code>Oc WRG 6s 12m 9-6M</code>.</p>
 <p>Sektorgränserna i fyrlistor anges som <b>bäringar från sjön mot fyren</b>, alltså hur du ser fyren. I sjökortet är sektorerna ritade med tunna linjer och bokstäver.</p>
 <p>I gränsen mellan två sektorer finns en smal zon där färgen är osäker och kan växla. Lita inte på gränsen. Håll dig väl inne i den vita sektorn.</p>
+<p class="key"><b>Minnesregel: färg mot färg.</b> Ser du rött eller grönt ljus från en sektorfyr, styr så att fyren hamnar på samma sida som din lanterna med samma färg. Ser du <b>rött</b>, styr så att fyren hamnar på din <b>babordssida</b> (röd lanterna). Ser du <b>grönt</b>, styr så att fyren hamnar på din <b>styrbordssida</b> (grön lanterna). Regeln gäller både när du kör mot fyren och när du kör ifrån den. Fortsätt tills ljuset blir vitt.</p>
+<p class="foot" style="margin:0 0 10px">Regeln bygger på att sektorerna är ordnade som vanligt, med rött till vänster och grönt till höger när du kör mot fyren. Kontrollera alltid sektorerna i sjökortet.</p>
 <h3>Ledfyr och ensfyrar</h3><ul><li><b>Ledfyr:</b> visar en smal ledsektor genom en passage.</li><li><b>Ensfyrar:</b> två fyrar där den bakre står högre. När de står rakt över varandra ligger du i enslinjen. Hamnar det övre ljuset till höger om det nedre ska du styra åt höger, och tvärtom.</li></ul>`,
- c:[{q:'Hur anges sektorgränser i fyrlistor?',o:['Som bäringar från sjön mot fyren','Som bäringar från fyren ut mot sjön','I sjömil','Som klockslag'],a:0,e:'De beskriver hur du ser fyren från båten.'},
+ c:[{q:'Du kör mot en sektorfyr och ser grönt. Hur styr du?',o:['Så att fyren hamnar på din styrbordssida tills du ser vitt','Så att fyren hamnar på din babordssida','Rakt mot fyren','Du ökar farten'],a:0,e:'Färg mot färg: grön lanterna sitter på styrbord.'},
+    {q:'Hur anges sektorgränser i fyrlistor?',o:['Som bäringar från sjön mot fyren','Som bäringar från fyren ut mot sjön','I sjömil','Som klockslag'],a:0,e:'De beskriver hur du ser fyren från båten.'},
     {q:'Det bakre (övre) ensljuset syns till vänster om det främre. Åt vilket håll ska du styra för att komma in i enslinjen?',o:['Åt vänster','Åt höger','Rakt fram','Backa'],a:0,e:'Styr mot det övre ljuset tills de står i linje.'}]},
  {id:'k-3-4',t:'Lysvidd och avstånd till fyren',b:`
 <ul><li><b>Nominell lysvidd</b> är hur långt ljuset syns vid normal sikt (ca 10 M). Det är den siffran som står i sjökortet, t.ex. 9M.</li><li><b>Geografisk lysvidd</b> begränsas av jordens krökning: hur högt ljuset sitter och hur högt ditt öga är.</li></ul>
