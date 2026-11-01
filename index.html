@@ -1355,7 +1355,7 @@ function figRoseFull(deg=45){
 const DIRNAME=d=>['nord','nordost','ost','sydost','syd','sydväst','väst','nordväst'][Math.round(((d%360)+360)%360/45)%8];
 function roseWidget(){return `<div class="rosew" data-widget="rose"><div class="fig">${figRoseFull(45)}</div><div class="slider"><label>Kurs</label><input type="range" min="0" max="359" value="45" aria-label="Kurs i grader"><output>045°</output></div><div class="controls rose-q">${[0,45,90,135,180,225,270,315].map(d=>`<button class="btn" data-d="${d}">${String(d).padStart(3,'0')}</button>`).join('')}</div><p class="rose-txt" style="margin:0"></p></div>`}
 function initWidgets(root){root.querySelectorAll('[data-widget=rose]').forEach(w=>{const inp=w.querySelector('input'),out=w.querySelector('output'),arr=w.querySelector('.rose-arrow'),txt=w.querySelector('.rose-txt');
- const up=()=>{const d=+inp.value,dd=String(d).padStart(3,'0');arr.setAttribute('transform',`rotate(${d} 150 150)`);out.textContent=dd+'°';txt.innerHTML=`Kurs <b>${dd}°</b> är ungefär <b>${DIRNAME(d)}</b>. Fören pekar dit pilen pekar.`};
+ const up=()=>{const d=+inp.value,dd=String(d).padStart(3,'0');arr.setAttribute('transform',`rotate(${d} 150 150)`);out.textContent=dd+'°';txt.innerHTML=`Kurs <b>${dd}°</b> är ${d%45===0?'':'ungefär '}<b>${DIRNAME(d)}</b>. Fören pekar dit pilen pekar.`};
  inp.addEventListener('input',up);w.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.d;up()});up()})}
 
 const T=(x,y,s,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)" ${o}>${s}</text>`;
