@@ -1325,6 +1325,32 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figLandMarks(){
+ const T=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">${t}</text>`;
+ let s=`<svg viewBox="0 0 340 220" width="340" height="220" role="img" aria-label="Fasta sjömärken på land"><rect width="340" height="150" fill="var(--sea-soft)"/><rect y="150" width="340" height="70" fill="#2b77aa" opacity=".35"/>`;
+ // rocks
+ s+=`<path d="M0 150 Q30 128 70 132 Q95 128 110 150Z M95 150 Q125 120 175 126 Q205 124 225 150Z M215 150 Q250 126 290 128 Q320 130 340 150Z" fill="#8f8a7a"/>`;
+ // fyr
+ s+=`<path d="M40 132 L44 64 L60 64 L64 132Z" fill="#f4f1ea" stroke="#555"/><rect x="43" y="90" width="18" height="12" fill="#c8312b"/><rect x="45" y="50" width="14" height="14" fill="#ffd76a" stroke="#333" stroke-width="2"/><path d="M42 50 L52 40 L62 50Z" fill="#c8312b" stroke="#333"/>`;
+ // kummel
+ s+=`<path d="M126 128 Q128 104 140 100 Q152 104 154 128Z" fill="#fbfbf6" stroke="#666"/><path d="M134 104 L140 84 L146 104Z" fill="#fbfbf6" stroke="#666"/>`;
+ // båk
+ s+=`<path d="M176 126 L192 60 L208 126" fill="none" stroke="#6b4a2b" stroke-width="3"/><line x1="181" y1="104" x2="203" y2="104" stroke="#6b4a2b" stroke-width="2.5"/><line x1="186" y1="82" x2="198" y2="82" stroke="#6b4a2b" stroke-width="2.5"/><rect x="184" y="48" width="16" height="14" fill="#c8312b" stroke="#333"/>`;
+ // ens
+ s+=`<rect x="250" y="104" width="22" height="22" fill="#fff" stroke="#333"/><rect x="258" y="104" width="6" height="22" fill="#c8312b"/><line x1="261" y1="126" x2="261" y2="132" stroke="#333" stroke-width="2"/>`;
+ s+=`<rect x="288" y="60" width="24" height="24" fill="#fff" stroke="#333"/><rect x="297" y="60" width="6" height="24" fill="#c8312b"/><line x1="300" y1="84" x2="300" y2="128" stroke="#333" stroke-width="2"/>`;
+ s+=T(52,176,'Fyr')+T(140,176,'Kummel')+T(192,176,'Båk')+T(281,176,'Ensmärken')+T(281,192,'(bakre högre)');
+ return s+`</svg>`}
+function figWaySigns(){
+ const sq=(x,inner,diag)=>`<rect x="${x}" y="10" width="76" height="76" fill="#fff" stroke="#d0312d" stroke-width="7"/>${inner}${diag?`<line x1="${x+8}" y1="78" x2="${x+68}" y2="18" stroke="#d0312d" stroke-width="7"/>`:''}`;
+ const T=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">${t}</text>`;
+ let s=`<svg viewBox="0 0 330 140" width="330" height="140" role="img" aria-label="Exempel på sjövägmärken">`;
+ s+=sq(10,`<text x="48" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="46" fill="#111">7</text>`,false);
+ s+=sq(126,[36,50,64].map(y=>`<path d="M140 ${y} q8 -7 16 0 t16 0 t16 0" fill="none" stroke="#111" stroke-width="3"/>`).join(''),true);
+ s+=sq(242,`<path d="M280 24 v40 M266 34 h28 M264 52 q16 22 32 0" fill="none" stroke="#111" stroke-width="4"/><circle cx="280" cy="22" r="4" fill="none" stroke="#111" stroke-width="3"/>`,true);
+ s+=T(48,108,'Högsta fart')+T(48,122,'7 knop')+T(164,108,'Förbud mot')+T(164,122,'svallvågor')+T(280,108,'Ankring')+T(280,122,'förbjuden');
+ return s+`</svg>`}
+
 function figCogGrund(){
  const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
  const boat=(x,y,r)=>`<g transform="rotate(${r} ${x} ${y})"><path d="M${x} ${y-14} Q${x+7} ${y-4} ${x+6} ${y+12} L${x-6} ${y+12} Q${x-7} ${y-4} ${x} ${y-14}Z" fill="var(--ink)"/><line x1="${x}" y1="${y-16}" x2="${x}" y2="${y-62}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 3"/></g>`;
@@ -1591,10 +1617,24 @@ ${restidWidget()}
 <ul><li><b>Enstaka grund</b> (svart-rött-svart, två svarta klot): ett litet grund mitt i öppet vatten. Det finns djupt vatten runt om, men åk inte nära själva märket.</li>
 <li><b>Mittledsmärke</b> (rött och vitt randigt, rött klot): betyder säkert vatten runt märket, ofta i farledens mitt eller där en farled börjar.</li>
 <li><b>Specialmärke</b> (gult med kryss): visar något särskilt, t.ex. en kabel, ett badområde eller ett militärt område. Sjökortet berättar vad.</li></ul>
-<h3>Fasta märken på land</h3><p>På öar och uddar står <b>kummel</b> (stenrösen eller målade byggda märken), <b>båkar</b> och <b>fyrar</b>. De syns i sjökortet och är bra att styra mot.</p>
-<h3>Skyltar vid vattnet</h3><p>Precis som vägmärken. Röd ring med en siffra betyder högsta fart i knop. Andra skyltar visar t.ex. förbud mot svall, förbud mot ankring eller att det finns en kabel.</p>`,
- c:[{q:'Ett märke är rött och vitt randigt. Vad betyder det?',o:['Säkert vatten runt märket','Grund rakt under märket','Rött ska vara till vänster','Badområde'],a:0,e:'Mittledsmärke.'},
-    {q:'En skylt vid stranden har en röd ring med siffran 5. Vad betyder det?',o:['Högsta fart 5 knop','5 meter djupt','Max 5 båtar','5 minuters parkering'],a:0,e:'Fart på sjön anges i knop.'}]}
+<h3>Fasta märken på land</h3>
+<div class="fig">${figLandMarks()}</div>
+<p>På öar, skär och uddar står märken som syns långt och är utritade i sjökortet. De är bra att styra mot och att pejla för att ta reda på var du är.</p>
+<ul><li><b>Fyr:</b> ett torn med ljus. I sjökortet står fyrens ljuskaraktär, hur högt ljuset sitter och hur långt det syns.</li>
+<li><b>Kummel:</b> ett röse av sten, ofta vitmålat, ibland med en överbyggnad. Vitmålningen gör att det syns mot mörka klippor och skog.</li>
+<li><b>Båk:</b> ett större byggt märke, ofta ett torn eller en ställning av trä med en tavla eller topp.</li>
+<li><b>Ensmärken:</b> två tavlor eller märken där det bakre sitter högre. När de står rakt ovanför varandra ligger du i enslinjen, som leder dig säkert genom en passage.</li></ul>
+<h3>Skyltar vid vattnet (sjövägmärken)</h3>
+<div class="fig">${figWaySigns()}</div>
+<p>Sjövägmärken är skyltar på land eller på stolpar i vattnet. Skyltar med <b>röd ram</b> anger ett förbud eller en begränsning. Ett rött snedstreck betyder att det som visas är förbjudet.</p>
+<ul><li><b>Högsta fart:</b> en fyrkantig skylt med röd ram och en siffra. Siffran är högsta tillåtna fart i knop.</li>
+<li><b>Förbud mot svallvågor:</b> sakta ner så att du inte svallar, ofta vid bryggor, smala sund och hamnar.</li>
+<li><b>Ankring förbjuden:</b> släpp inte ankaret här, ofta för att det finns kablar eller ledningar på botten.</li>
+<li>Andra skyltar kan varna för <b>kabel eller ledning</b> i vattnet eller ovanför, eller visa var en hamn eller ett ankringsområde finns.</li></ul>
+<p>Ibland markeras området där skylten gäller med <b>gula bojar</b> i vattnet.</p>`,
+ c:[{q:'Vad är ett kummel?',o:['Ett röse av sten på land, ofta vitmålat, som används som sjömärke','En boj som markerar grund','En flytande fyr','En skylt om fartbegränsning'],a:0,e:'Kummel är fasta sjömärken som syns i sjökortet och är bra att pejla mot.'},
+    {q:'Ett märke är rött och vitt randigt. Vad betyder det?',o:['Säkert vatten runt märket','Grund rakt under märket','Rött ska vara till vänster','Badområde'],a:0,e:'Mittledsmärke.'},
+    {q:'En fyrkantig skylt med röd ram har siffran 5. Vad betyder det?',o:['Högsta fart 5 knop','5 meter djupt','Max 5 båtar','5 minuters parkering'],a:0,e:'Fart på sjön anges i knop.'}]}
 ]},
 {t:'Instrumenten ombord',ls:[
  {id:'f-3-1',t:'Kompassen',b:`
