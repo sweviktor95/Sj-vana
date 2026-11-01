@@ -1326,6 +1326,38 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+const EXDEV=[[0,0],[30,2],[60,3],[90,3],[120,2],[150,0],[180,-1],[210,-2],[240,-3],[270,-3],[300,-2],[330,-1]];
+function figThreeNorths(){
+ const O={x:150,y:220},L=180,ray=(deg,col,w,dash)=>{const t=deg*Math.PI/180;return `<line x1="${O.x}" y1="${O.y}" x2="${(O.x+Math.sin(t)*L).toFixed(1)}" y2="${(O.y-Math.cos(t)*L).toFixed(1)}" stroke="${col}" stroke-width="${w}" ${dash?'stroke-dasharray="6 4"':''}/>`};
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 330 240" width="330" height="240" role="img" aria-label="Rättvisande, magnetisk och kompassens nord"><rect width="330" height="240" rx="4" fill="var(--sea-soft)"/>`;
+ s+=ray(0,'var(--ink)',3)+ray(18,'#7a4f8a',3)+ray(10,'#c46d00',3,true);
+ s+=T(54,30,'Rättvisande nord','font-weight="700"')+T(54,44,'(sjökortet)');
+ s+=T(214,62,'Magnetisk nord',`font-weight="700" fill="#7a4f8a"`);
+ s+=T(184,26,'Kompassens nord',`font-weight="700" fill="#c46d00"`);
+ s+=`<path d="M150 130 A90 90 0 0 1 177.8 134.4" fill="none" stroke="#7a4f8a" stroke-width="2"/>`+T(184,146,'missvisning',`fill="#7a4f8a"`)+T(184,160,'(t.ex. 6° O)',`fill="#7a4f8a"`);
+ s+=`<path d="M169.5 109.5 A112 112 0 0 1 184.6 113.6" fill="none" stroke="#c46d00" stroke-width="2"/>`+T(192,96,'deviation',`fill="#c46d00"`)+T(192,110,'(t.ex. 2° V)',`fill="#c46d00"`);
+ s+=`<circle cx="${O.x}" cy="${O.y}" r="4" fill="var(--ink)"/>`+T(8,232,'Vinklarna är överdrivna för att synas.','fill="var(--muted)" font-size="9.5"');
+ return s+`</svg>`}
+function figDevCard(hl){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="11" fill="#1d1d1d" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="Exempel på deviationstabell"><rect x="4" y="4" width="292" height="292" rx="4" fill="#fdfbf3" stroke="#b9ad86"/>`;
+ s+=T(16,26,'DEVIATIONSTABELL','font-weight="700"')+T(16,42,'M/B Exempel · gjord 2026-05-12','font-size="10" fill="#555"');
+ s+=T(30,64,'Magnetisk kurs','font-weight="700"')+T(180,64,'Deviation','font-weight="700"');
+ EXDEV.forEach(([c,d],i)=>{const y=82+i*17.5;if(c===hl)s+=`<rect x="12" y="${y-13}" width="276" height="17" fill="#ffe7a3"/>`;s+=T(60,y,String(c).padStart(3,'0')+'°')+T(196,y,d===0?'0°':`${Math.abs(d)}° ${d>0?'O':'V'}`)});
+ return s+`</svg>`}
+function figExChart(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#1d1d1d" ${o}>${t}</text>`;
+ const A={x:60,y:150},ang=96*Math.PI/180,B={x:A.x+Math.sin(ang)*220,y:A.y-Math.cos(ang)*220};
+ let s=`<svg viewBox="0 0 330 220" width="330" height="220" role="img" aria-label="Kurs uppmätt i sjökortet"><rect width="330" height="220" rx="4" fill="#f7fafc"/>`;
+ s+=`<path d="M0 190 Q40 170 60 178 Q90 196 120 200 L0 220Z" fill="#efe3b6" stroke="#6f6440"/><path d="M290 120 Q320 110 330 116 L330 200 Q300 190 290 170Z" fill="#efe3b6" stroke="#6f6440"/>`;
+ [40,80,120,160,200,240,280].forEach(x=>s+=`<line x1="${x}" y1="0" x2="${x}" y2="220" stroke="#c9d3d9" stroke-width=".6"/>`);
+ s+=`<line x1="${A.x}" y1="${A.y}" x2="${B.x.toFixed(1)}" y2="${B.y.toFixed(1)}" stroke="#c0392b" stroke-width="2.5"/><circle cx="${A.x}" cy="${A.y}" r="4" fill="#c0392b"/><circle cx="${B.x.toFixed(1)}" cy="${B.y.toFixed(1)}" r="4" fill="#c0392b"/>`;
+ s+=`<path d="M${A.x} ${A.y-60} A60 60 0 0 1 ${(A.x+Math.sin(ang)*60).toFixed(1)} ${(A.y-Math.cos(ang)*60).toFixed(1)}" fill="none" stroke="#1f5f8b" stroke-width="1.5"/><line x1="${A.x}" y1="${A.y}" x2="${A.x}" y2="${A.y-70}" stroke="#1f5f8b" stroke-dasharray="4 3"/>`;
+ s+=T(A.x+30,A.y-66,'096°','font-weight="700" fill="#1f5f8b"')+T(A.x-30,A.y+26,'Hamnen')+T(B.x-50,B.y-10,'Fyren')+T(A.x-6,A.y-74,'N','fill="#1f5f8b"');
+ s+=`<circle cx="250" cy="52" r="30" fill="none" stroke="#7a4f8a"/><line x1="250" y1="22" x2="250" y2="82" stroke="#7a4f8a"/><g transform="rotate(6 250 52)"><line x1="250" y1="28" x2="250" y2="52" stroke="#7a4f8a" stroke-width="2.5"/></g>`+T(250,100,'Missvisning','font-size="9.5" fill="#7a4f8a" text-anchor="middle"')+T(250,113,'6° O (2026)','font-size="9.5" fill="#7a4f8a" text-anchor="middle"');
+ return s+`</svg>`}
+
 function figFarledSverige(){
  const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
  const land=[[150,16],[166,24],[160,52],[146,78],[134,104],[132,132],[124,160],[128,190],[118,218],[120,246],[108,268],[100,286],[72,292],[56,282],[50,258],[44,232],[40,206],[52,180],[64,140],[84,96],[110,56],[132,24]].map(p=>p.join(',')).join(' ');
@@ -1804,7 +1836,13 @@ ${kompassWidget()}
 <li>Om plottern slocknar, i mörker eller i dimma, är kompassen och sjökortet det du har kvar.</li>
 <li>Med kompassen kan du styra en kurs du har räknat fram i sjökortet.</li></ul>
 <h3>Varför kompassen inte visar exakt rätt</h3><ul><li><b>Missvisning:</b> kompassen pekar mot den magnetiska nordpolen, som inte ligger på samma ställe som den "riktiga" nordpolen på kartan. I Sverige är skillnaden några grader. Den står i sjökortets kompassros.</li>
-<li><b>Deviation:</b> järn och elektronik i båten stör kompassen. Felet är olika stort beroende på åt vilket håll båten pekar. Det står i båtens <b>deviationstabell</b>.</li></ul>
+<li><b>Deviation:</b> järn och elektronik i båten stör kompassen. Felet är olika stort beroende på åt vilket håll båten pekar.</li></ul>
+<h3>Deviationstabellen gör du själv</h3>
+<p>Deviationen är unik för varje båt och varje kompassplacering. Därför följer det inte med någon färdig tabell från fabriken. Du tar fram den själv, eller med hjälp av en kompassjusterare:</p>
+<ul><li>Kör båten på olika kurser runt hela kompassen, till exempel var 30:e grad.</li>
+<li>Jämför vad kompassen visar med en känd riktning, till exempel en enslinje i sjökortet.</li>
+<li>Skillnaden är deviationen på den kursen. Skriv in den i tabellen.</li></ul>
+<p>Har du köpt en begagnad båt kan det finnas en gammal tabell ombord, men den gäller bara om ingenting har ändrats. Har någon flyttat kompassen, monterat ny elektronik eller högtalare i närheten, eller bytt motor, måste tabellen göras om. Hur man mäter deviationen i en enslinje går kustskepparkursen igenom.</p>
 <p>Hur du räknar med de här felen lär du dig i navigationsmodulen.</p>
 <p>En <b>pejlkompass</b> är en liten handkompass som du siktar med mot ett föremål för att få dess riktning (bäring).</p>
 <p class="key"><b>Kom ihåg:</b> Lägg aldrig mobil, nycklar eller verktyg nära kompassen. Det ger fel.</p>`,
@@ -1848,13 +1886,36 @@ ${kompassWidget()}
  c:[{q:'Vilken kurs är sydväst?',o:['225','135','315','045'],a:0,e:'Söder 180 + 45 = 225.'},
     {q:'Vinden kommer från vänster. Åt vilket håll ska du styra lite extra för att hålla kursen?',o:['Lite åt vänster, mot vinden','Lite åt höger','Rakt','Det spelar ingen roll'],a:0,e:'Vinden trycker dig åt höger, så du styr upp mot den.'}]},
  {id:'f-4-3',t:'Räkna med kompassfelen',b:`
-<p>Sjökortet visar <b>rättvisande</b> riktning (mot den riktiga nordpolen). Kompassen visar något annat på grund av missvisning och deviation. Därför behöver du räkna om.</p>
+<p>Sjökortet och kompassen visar inte riktigt samma sak. Sjökortet visar riktningar mot den riktiga nordpolen. Kompassen pekar mot en annan punkt, och dessutom stör båten den. Därför måste du räkna om när du går mellan kort och kompass.</p>
+<h3>Tre olika "norr"</h3>
+<div class="fig">${figThreeNorths()}</div>
+<ul><li><b>Rättvisande nord:</b> den riktiga nordpolen. Alla riktningar i sjökortet utgår från den.</li>
+<li><b>Magnetisk nord:</b> dit en kompass pekar om inget stör den. Skillnaden mot rättvisande nord heter <b>missvisning</b>. Den står i sjökortets kompassros, till exempel "6° O".</li>
+<li><b>Kompassens nord:</b> dit just din kompass pekar, när båtens järn och elektronik har dragit lite i den. Skillnaden mot magnetisk nord heter <b>deviation</b>. Den står i din deviationstabell.</li></ul>
+<h3>Trappan</h3>
 <div class="fig">${figConvert()}</div>
-<p>Tre steg från kompassen till kortet:</p><ol><li><b>Kompasskurs</b> (KK): det kompassen visar.</li><li>Lägg till <b>deviationen</b>: då får du <b>magnetisk kurs</b> (MK).</li><li>Lägg till <b>missvisningen</b>: då får du <b>rättvisande kurs</b> (RK), den du ritar i kortet.</li></ol>
-<p><b>Ost räknas plus och väst minus.</b> Går du åt andra hållet, från kortet till kompassen, byter du tecken.</p>
-<h3>Exempel från kortet till kompassen</h3><p>Du ritar en kurs i kortet: 100 grader. Missvisningen är 6° ost och deviationen 2° väst.</p><p>100 − 6 = 94 (magnetisk). 94 + 2 = <b>96</b>. Du styr 096 på kompassen.</p>
-<p class="key"><b>Tips:</b> Räkna alltid tillbaka för att kontrollera: 096 − 2 + 6 = 100. Rätt.</p>`,
- c:[{q:'Kompassen visar 050. Deviation 3° ost, missvisning 5° ost. Vad blir rättvisande kurs?',o:['058','042','052','048'],a:0,e:'050 + 3 + 5 = 058.'},
+<p>Kurserna har egna namn: <b>KK</b> kompasskurs (det kompassen visar), <b>MK</b> magnetisk kurs och <b>RK</b> rättvisande kurs (det du ritar i kortet). Tänk på det som en trappa med tre steg:</p>
+<ul><li><b>Från kompassen till kortet</b> (KK → MK → RK): lägg till deviationen och sedan missvisningen. <b>Ost är plus och väst är minus.</b></li>
+<li><b>Från kortet till kompassen</b> (RK → MK → KK): gå trappan åt andra hållet och <b>byt tecken</b>. Ost dras ifrån och väst läggs till.</li></ul>
+<h3>Exempel 1: Från sjökortet till kompassen</h3>
+<p>Du ska köra från hamnen till fyren. Hur ska du styra på kompassen?</p>
+<div class="fig">${figExChart()}</div>
+<p><b>Steg 1. Mät kursen i sjökortet.</b> Lägg gradskivan mellan hamnen och fyren. Den visar <b>096°</b>. Det är rättvisande kurs, RK.</p>
+<p><b>Steg 2. Ta bort missvisningen.</b> Kompassrosen i kortet säger 6° O. Från kortet mot kompassen byter du tecken, så ost dras ifrån: 096 − 6 = <b>090°</b>. Det är magnetisk kurs, MK.</p>
+<div class="fig">${figDevCard(90)}</div>
+<p><b>Steg 3. Ta bort deviationen.</b> Leta upp 090° i din deviationstabell. Där står 3° O. Ost dras ifrån igen: 090 − 3 = <b>087°</b>. Det är kompasskurs, KK.</p>
+<div class="fig">${figBoatCompass(87)}</div>
+<p><b>Steg 4. Styr.</b> Sväng tills 087 står vid styrstrecket. Då går båten 096° i sjökortet.</p>
+<p class="key"><b>Kontrollera baklänges:</b> 087 + 3 (dev O) = 090, och 090 + 6 (miss O) = 096. Stämmer med kortet.</p>
+<h3>Exempel 2: Från kompassen till sjökortet</h3>
+<p>Du har styrt <b>200°</b> på kompassen och vill rita in i sjökortet var du har kört.</p>
+<p><b>Steg 1.</b> Deviationstabellen visar 1° V vid 180° och 2° V vid 210°. 200 ligger närmast 210, så räkna med ungefär <b>2° V</b>.</p>
+<p><b>Steg 2.</b> Från kompassen mot kortet: väst är minus. 200 − 2 = <b>198°</b> (MK).</p>
+<p><b>Steg 3.</b> Missvisningen 6° O är plus: 198 + 6 = <b>204°</b> (RK). Det är den linje du ritar i sjökortet.</p>
+<p class="key"><b>Kom ihåg:</b> Skriv upp varje steg, KK, MK och RK, och räkna alltid tillbaka för att kontrollera. Ett fel tecken ger lätt 10–15 graders fel, och då kan du hamna på fel sida om ett grund.</p>`,
+ c:[{q:'Sjökortet visar kursen 126°. Missvisningen är 6° O och deviationen på 120° är 2° O. Vilken kompasskurs styr du?',o:['118°','134°','122°','130°'],a:0,e:'Från kortet mot kompassen byter du tecken: 126 − 6 = 120 (MK), 120 − 2 = 118 (KK).'},
+    {q:'Vad kallas skillnaden mellan rättvisande nord och magnetisk nord?',o:['Missvisning','Deviation','Avdrift','Kurs över grund'],a:0,e:'Missvisningen står i sjökortets kompassros. Deviationen kommer från båten själv.'},
+    {q:'Kompassen visar 050. Deviation 3° ost, missvisning 5° ost. Vad blir rättvisande kurs?',o:['058','042','052','048'],a:0,e:'050 + 3 + 5 = 058.'},
     {q:'Kortet visar 200. Missvisning 6° ost, ingen deviation. Vad styr du på kompassen?',o:['194','206','200','186'],a:0,e:'Från kortet till kompassen byter du tecken: 200 − 6.'}]},
  {id:'f-4-4',t:'Fart, tid och sträcka',b:`
 <p>Det här är samma räkning som i bilen, fast i knop och sjömil.</p>
