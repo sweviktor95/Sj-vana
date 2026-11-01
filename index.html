@@ -1323,6 +1323,20 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figCog(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 320 300" width="320" height="300" role="img" aria-label="Kurs genom vattnet jämfört med kurs över grund"><defs><marker id="cgA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--muted)"/></marker><marker id="cgB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#c0392b"/></marker><marker id="cgC" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--sea)"/></marker></defs><rect width="320" height="300" rx="4" fill="var(--sea-soft)"/>`;
+ s+=`<line x1="110" y1="250" x2="110" y2="70" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#cgA)"/>`;
+ s+=`<line x1="110" y1="70" x2="190" y2="70" stroke="#c0392b" stroke-width="2.5" marker-end="url(#cgB)"/>`;
+ s+=`<line x1="110" y1="250" x2="190" y2="70" stroke="var(--sea)" stroke-width="3.5" marker-end="url(#cgC)"/>`;
+ s+=`<path d="M110 236 Q117 246 116 262 L104 262 Q103 246 110 236Z" fill="var(--ink)"/>`;
+ s+=T(16,160,'Fören pekar')+T(16,174,'hit: 000°')+T(16,188,'(kompassen)');
+ s+=T(122,60,'ström',`fill="#c0392b"`);
+ s+=T(170,170,'COG 024°',`fill="var(--sea)" font-weight="700"`)+T(170,184,'SOG 6,6 kn',`fill="var(--sea)" font-weight="700"`)+T(170,200,'så rör sig båten',`fill="var(--sea)"`)+T(170,214,'över botten',`fill="var(--sea)"`);
+ s+=T(12,22,'Loggen: 6 kn genom vattnet')+T(12,38,'Ström: 2,7 kn österut');
+ s+=`<text x="304" y="22" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">N ↑</text>`;
+ return s+`</svg>`}
+
 function figLovart(){
  const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)" ${o}>${t}</text>`;
  const wind=(y)=>`<line x1="14" y1="${y}" x2="62" y2="${y}" stroke="var(--muted)" stroke-width="2"/><path d="M56 ${y-5} L64 ${y} L56 ${y+5}" fill="none" stroke="var(--muted)" stroke-width="2"/>`;
@@ -1488,9 +1502,24 @@ ${roseWidget()}
  {id:'f-1-2',t:'Plotter och elektroniska sjökort',b:`
 <p>En <b>plotter</b> är en GPS med sjökort, ungefär som en bil-GPS. Den visar var du är och kan rita en rutt. Även appar i mobilen fungerar som plotter.</p>
 <h3>Skillnaden mot en bil-GPS</h3><ul><li>Det finns inga vägar. Plottern vet inte alltid var det är säkert, bara var kortet säger att det är djupt.</li><li>Kortet blir inte noggrannare för att du zoomar in. Zoomar du in mycket ser det detaljerat ut, men en sten som aldrig mätts kommer inte fram. Det kallas <b>överzoomning</b>.</li><li>Positionen kan vara fel några meter, och kortet kan också vara fel. Tillsammans kan det bli tiotals meter.</li></ul>
-<h3>Bra att kunna</h3><ul><li><b>North up:</b> norr alltid uppåt, som en vanlig karta. <b>Course up:</b> båtens färdriktning uppåt, lättare att jämföra med det du ser.</li><li><b>Nattläge:</b> dämpad skärm så att du inte blir bländad.</li><li><b>COG och SOG</b> är kurs och fart över grund, alltså hur båten <b>faktiskt</b> rör sig när vind och ström också påverkar.</li></ul>
+<h3>Bra att kunna</h3><ul><li><b>North up:</b> norr alltid uppåt, som en vanlig karta. <b>Course up:</b> båtens färdriktning uppåt, lättare att jämföra med det du ser.</li><li><b>Nattläge:</b> dämpad skärm så att du inte blir bländad.</li><li><b>COG och SOG</b> visar hur båten faktiskt rör sig över botten. Se nedan.</li></ul>
+<h3>COG och SOG</h3>
+<p>Förkortningarna kommer från engelskan:</p>
+<ul><li><b>COG = Course Over Ground</b>, kurs över grund. Den riktning båten faktiskt rör sig i över botten, i grader.</li>
+<li><b>SOG = Speed Over Ground</b>, fart över grund. Hur fort båten faktiskt rör sig över botten, i knop.</li></ul>
+<p>Båda räknas ut av GPS:en, som jämför var båten är nu med var den var nyss.</p>
+<h3>Varför skiljer de sig från kompassen och loggen?</h3>
+<p>Kompassen visar vart <b>fören pekar</b>, och loggen visar hur fort båten går <b>genom vattnet</b>. Men vattnet kan själv röra sig (ström), och vinden kan trycka båten åt sidan (avdrift). Då går båten inte exakt dit fören pekar.</p>
+<div class="fig">${figCog()}</div>
+<p>Exemplet: fören pekar rakt norrut, 000°, och loggen visar 6 knop. Samtidigt sätter en ström österut. Båten glider därför snett, och GPS:en visar <b>COG 024°</b> och <b>SOG 6,6 knop</b>. Det är den blå linjen du faktiskt följer över botten.</p>
+<ul><li>Är COG lika med kompasskursen och SOG lika med loggen finns ingen ström eller avdrift att tala om.</li>
+<li>Är SOG högre än loggen har du medström. Är den lägre har du motström.</li>
+<li>Vill du hålla en viss linje över botten, till exempel mellan två grund, är det COG du ska titta på.</li></ul>
+<p class="key"><b>Kom ihåg:</b> Kompass och logg beskriver båten i vattnet. COG och SOG beskriver båten över botten. I mycket låg fart hoppar COG och SOG, eftersom små GPS-fel blir stora i förhållande till sträckan.</p>
 <details class="extra"><summary>Överkurs: raster och vektor</summary><p>Rasterkort är inskannade papperskort. Vektorkort är byggda av lager med information som du kan klicka på. På vektorkort kan information döljas om du ställer in plottern fel.</p></details>`,
- c:[{q:'Du zoomar in mycket i plottern. Vad gäller?',o:['Kortet blir inte noggrannare, även om det ser detaljerat ut','Du ser alla stenar','Positionen blir exaktare','Plottern varnar alltid för grund'],a:0,e:'Det kallas överzoomning.'},
+ c:[{q:'Vad står SOG för?',o:['Speed Over Ground, fart över grund','Speed Of Gear, motorns fart','Ström och grund','Signal On GPS'],a:0,e:'SOG är farten över botten. COG är kursen över botten.'},
+    {q:'Kompassen visar 090 men plottern visar COG 100. Vad betyder det?',o:['Ström eller vind trycker båten så att den rör sig mot 100 över botten','Kompassen är trasig','Du kör baklänges','Plottern visar alltid 10 grader för mycket'],a:0,e:'Fören pekar mot 090, men båten glider snett och rör sig mot 100 över botten.'},
+    {q:'Du zoomar in mycket i plottern. Vad gäller?',o:['Kortet blir inte noggrannare, även om det ser detaljerat ut','Du ser alla stenar','Positionen blir exaktare','Plottern varnar alltid för grund'],a:0,e:'Det kallas överzoomning.'},
     {q:'Vad visar COG?',o:['Hur båten faktiskt rör sig över botten','Hur fort motorn går','Vart fören pekar','Vindens riktning'],a:0,e:'Course over ground.'}]}
 ]},
 {t:'Sjömärken',ls:[
