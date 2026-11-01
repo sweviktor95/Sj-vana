@@ -128,6 +128,9 @@ input[type=range]{width:100%;accent-color:var(--sea)}
 .chk.on{background:var(--good);border-color:var(--good)}
 .chk.sim{border-color:var(--sea);color:var(--sea)}
 .simtip{display:flex;flex-direction:column;gap:8px}
+.rosew{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
+.rosew .slider{grid-template-columns:50px 1fr 60px}
+.rose-q .btn{padding:4px 10px;min-height:32px;font-family:var(--mono);font-size:.85rem}
 .chartui{display:flex;flex-direction:column;gap:8px;min-width:0}
 .chartbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .chartbar .btn{padding:6px 10px;min-height:36px}
@@ -1320,6 +1323,20 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figRoseFull(deg=45){
+ const C=150,R=118;let s=`<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="Kompassros med grader"><circle cx="${C}" cy="${C}" r="${R}" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>`;
+ for(let d=0;d<360;d+=5){const t=d*Math.PI/180,L=d%30===0?16:d%10===0?10:6;s+=`<line x1="${(C+Math.sin(t)*R).toFixed(1)}" y1="${(C-Math.cos(t)*R).toFixed(1)}" x2="${(C+Math.sin(t)*(R-L)).toFixed(1)}" y2="${(C-Math.cos(t)*(R-L)).toFixed(1)}" stroke="var(--ink)" stroke-width="${d%30===0?2:1}"/>`;
+  if(d%30===0)s+=`<text x="${(C+Math.sin(t)*(R+14)).toFixed(1)}" y="${(C-Math.cos(t)*(R+14)+4).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)">${String(d).padStart(3,'0')}</text>`}
+ [['N',0,18],['NO',45,12],['O',90,15],['SO',135,12],['S',180,15],['SV',225,12],['V',270,15],['NV',315,12]].forEach(([n,d,fs])=>{const t=d*Math.PI/180,r=d%90?70:84;s+=`<text x="${(C+Math.sin(t)*r).toFixed(1)}" y="${(C-Math.cos(t)*r+fs*0.35).toFixed(1)}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="${fs}" fill="${n==='N'?'#c8312b':'var(--ink)'}">${n}</text>`});
+ s+=`<path d="M${C} ${C-50} L${C+7} ${C} L${C} ${C+50} L${C-7} ${C}Z" fill="none" stroke="var(--line)"/><path d="M${C-50} ${C} L${C} ${C-7} L${C+50} ${C} L${C} ${C+7}Z" fill="none" stroke="var(--line)"/>`;
+ s+=`<g class="rose-arrow" transform="rotate(${deg} ${C} ${C})"><line x1="${C}" y1="${C}" x2="${C}" y2="${C-R+22}" stroke="var(--sea)" stroke-width="4" stroke-linecap="round"/><path d="M${C-9} ${C-R+30} L${C} ${C-R+12} L${C+9} ${C-R+30}Z" fill="var(--sea)"/></g><circle cx="${C}" cy="${C}" r="5" fill="var(--ink)"/></svg>`;
+ return s}
+const DIRNAME=d=>['nord','nordost','ost','sydost','syd','sydväst','väst','nordväst'][Math.round(((d%360)+360)%360/45)%8];
+function roseWidget(){return `<div class="rosew" data-widget="rose"><div class="fig">${figRoseFull(45)}</div><div class="slider"><label>Kurs</label><input type="range" min="0" max="359" value="45" aria-label="Kurs i grader"><output>045°</output></div><div class="controls rose-q">${[0,45,90,135,180,225,270,315].map(d=>`<button class="btn" data-d="${d}">${String(d).padStart(3,'0')}</button>`).join('')}</div><p class="rose-txt" style="margin:0"></p></div>`}
+function initWidgets(root){root.querySelectorAll('[data-widget=rose]').forEach(w=>{const inp=w.querySelector('input'),out=w.querySelector('output'),arr=w.querySelector('.rose-arrow'),txt=w.querySelector('.rose-txt');
+ const up=()=>{const d=+inp.value,dd=String(d).padStart(3,'0');arr.setAttribute('transform',`rotate(${d} 150 150)`);out.textContent=dd+'°';txt.innerHTML=`Kurs <b>${dd}°</b> är ungefär <b>${DIRNAME(d)}</b>. Fören pekar dit pilen pekar.`};
+ inp.addEventListener('input',up);w.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.d;up()});up()})}
+
 const T=(x,y,s,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)" ${o}>${s}</text>`;
 function figRose(){
   let s=`<svg viewBox="0 0 220 220" width="220" height="220"><circle cx="110" cy="110" r="90" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
@@ -1411,12 +1428,19 @@ LESSONS.forar=[
 <ul><li><b>Nautisk mil (sjömil, M):</b> 1 852 meter, ungefär 1,9 km. Det är precis en "minut" på jordens rutnät, vilket gör det lätt att mäta i sjökortet.</li>
 <li><b>Knop:</b> en nautisk mil i timmen. 10 knop är alltså ungefär 18,5 km/h. En vanlig motorbåt i planingsfart går 20–30 knop, en segelbåt 5–7 knop.</li>
 <li><b>Djup</b> anges i meter.</li>
-<li><b>Riktningar</b> anges i grader, 0–360, medurs från norr: norr 000, öster 090, söder 180, väster 270.</li></ul>
+<li><b>Riktningar</b> anges i grader, 0–360, medurs från norr.</li></ul>
+<h3>Kompassrosen</h3>
+<p>Tänk dig en klocka som ligger platt, med norr där tolvan sitter. Varvet runt är 360 grader och räknas medurs: <b>norr 000</b>, <b>ost 090</b>, <b>syd 180</b> och <b>väst 270</b>. Mitt emellan ligger nordost 045, sydost 135, sydväst 225 och nordväst 315.</p>
+${roseWidget()}
+<p>Dra i reglaget eller tryck på en knapp för att se kursen. Riktningar skrivs alltid med tre siffror, till exempel <b>045</b> och inte 45, så att ingen siffra kan missas eller läggas till.</p>
+<p class="key"><b>Kom ihåg:</b> Grader ökar medurs. Svänger du höger blir kursen högre, svänger du vänster blir den lägre. Från 350 och 20 grader åt höger hamnar du på 010.</p>
 <h3>Några ord du kommer att möta</h3><ul><li><b>Farled:</b> en utmärkt "väg" på vattnet där det är tillräckligt djupt. Ungefär som en väg på land, men utan asfalt.</li>
 <li><b>Sjömärke (prick, boj):</b> skyltarna längs farleden. De visar var det är djupt och var det är grunt.</li>
 <li><b>Sjökort:</b> kartan för sjön. Den visar djup, grund, sjömärken och farleder.</li>
 <li><b>Grund:</b> där det är så grunt att båten kan slå i botten.</li></ul>`,
- c:[{q:'Ungefär hur många kilometer är en nautisk mil?',o:['1,9 km','1 km','10 km','0,5 km'],a:0,e:'1 852 meter.'},
+ c:[{q:'Vilken kurs har du om du åker rakt mot sydost?',o:['135','045','225','315'],a:0,e:'Sydost ligger mitt emellan ost 090 och syd 180.'},
+    {q:'Du har kurs 350 och svänger 20 grader åt höger. Vilken kurs får du?',o:['010','370','330','020'],a:0,e:'Efter 359 börjar det om på 000. 350 + 20 = 370, minus 360 = 010.'},
+    {q:'Ungefär hur många kilometer är en nautisk mil?',o:['1,9 km','1 km','10 km','0,5 km'],a:0,e:'1 852 meter.'},
     {q:'Vad betyder 12 knop?',o:['12 nautiska mil per timme','12 km/h','12 meter per sekund','12 varv per minut'],a:0,e:'Ungefär 22 km/h.'},
     {q:'Vilken riktning är 270 grader?',o:['Väster','Öster','Söder','Norr'],a:0,e:'Norr 0, öster 90, söder 180, väster 270.'}]}
 ]},
@@ -1500,7 +1524,7 @@ LESSONS.forar=[
  c:[{q:'Var på sjökortet mäter du avstånd i sjömil?',o:['På vänster eller höger kant','På överkanten','På underkanten','Var som helst'],a:0,e:'En minut latitud = en sjömil.'},
     {q:'Vad skrivs först i en position?',o:['Latitud (nord/syd)','Longitud (öst/väst)','Djupet','Klockslaget'],a:0,e:'Till exempel 65°36\'N 022°11\'E.'}]},
  {id:'f-4-2',t:'Kurs och bäring',b:`
-<div class="fig">${figRose()}</div>
+<div class="fig">${figRoseFull(45)}</div>
 <ul><li><b>Kurs</b> är riktningen båten åker i, i grader. Kurs 045 betyder nordost.</li><li><b>Bäring</b> är riktningen från dig till något du ser, t.ex. en fyr.</li></ul>
 <p>Riktningar skrivs alltid med tre siffror: 045, inte 45.</p>
 <p>Kurser ritar du i sjökortet med en <b>kurslinjal</b> eller <b>transportör</b> som du lägger mot kartans nord-sydliga linjer.</p>
@@ -2278,6 +2302,7 @@ function lessonView(cid,lid){
        <button class="btn primary" id="done" ${allAns?'':'disabled'}>${next?'Klar, nästa lektion →':'Klar, tillbaka till kursen'}</button>
        ${allAns?`<span class="foot">${right} av ${checks.length} rätt${right<checks.length?'. Läs gärna igenom avsnittet igen.':''}</span>`:'<span class="foot">Svara på kontrollfrågorna för att gå vidare.</span>'}</div>
     </article>`;
+    initWidgets(app);
     $('#toc').onclick=()=>go('kurs-'+cid);
     $('#prev')?.addEventListener('click',()=>go('lek-'+cid+'-'+prev.id));
     $('#done').onclick=()=>{prog[lid]=true;saveProg();go(next?'lek-'+cid+'-'+next.id:'kurs-'+cid)};
