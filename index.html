@@ -1325,6 +1325,22 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figChartNest(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ let s=`<svg viewBox="0 0 330 250" width="330" height="250" role="img" aria-label="Hur sjökortens nummer hänger ihop">`;
+ s+=`<rect x="4" y="4" width="322" height="242" rx="4" fill="var(--sea-soft)" stroke="var(--line)"/>`+T(12,22,'Kustkort, 2 siffror, t.ex. 1:250 000','font-weight="700"');
+ s+=`<path d="M4 90 Q60 70 90 100 Q120 80 160 110 Q200 90 230 120 L230 246 L4 246Z" fill="#efe3b6" opacity=".55"/>`;
+ s+=`<rect x="70" y="44" width="230" height="170" rx="3" fill="var(--surface)" fill-opacity=".85" stroke="var(--sea)" stroke-width="2"/>`+T(80,62,'616 Skärgårdskort','font-weight="700" fill="var(--sea)"')+T(80,76,'1:50 000','fill="var(--sea)"');
+ s+=`<rect x="170" y="110" width="116" height="88" rx="3" fill="var(--surface)" stroke="#c0392b" stroke-width="2"/>`+T(178,128,'6163 Specialkort','font-weight="700" fill="#c0392b"')+T(178,142,'1:25 000','fill="#c0392b"')+T(178,166,'mindre område,','fill="#c0392b"')+T(178,180,'dubbel skala','fill="#c0392b"');
+ s+=T(80,232,'616 + en siffra = 6163','font-weight="700"');
+ return s+`</svg>`}
+
+
+function chSpar(x,y,col,top){const tx=x+9,ty=y-22;let t='';
+ if(top==='can')t=`<rect x="${tx-3.5}" y="${ty-8}" width="7" height="7" fill="#111" transform="rotate(22 ${tx} ${ty-4})"/>`;
+ if(top==='cone')t=`<path d="M${tx-4} ${ty-1} L${tx+4} ${ty-1} L${tx+1} ${ty-9}Z" fill="#111"/>`;
+ return `<line x1="${x}" y1="${y}" x2="${tx}" y2="${ty}" stroke="#222" stroke-width="5.4" stroke-linecap="round"/><line x1="${x}" y1="${y}" x2="${tx}" y2="${ty}" stroke="${col}" stroke-width="3.6" stroke-linecap="round"/>${t}<circle cx="${x}" cy="${y}" r="2.6" fill="#fff" stroke="#222" stroke-width="1"/>`}
+function chFlare(x,y){return `<path d="M${x} ${y} C${x+4} ${y-12} ${x+16} ${y-26} ${x+24} ${y-24} C${x+30} ${y-20} ${x+18} ${y-6} ${x} ${y}Z" fill="#d6339a" opacity=".75"/><circle cx="${x}" cy="${y}" r="2.6" fill="#111"/>`}
 function figChartSymbols(){
  const W=108,H=86,tiles=[
   ['Djup i meter',`<text x="54" y="44" text-anchor="middle" font-style="italic" font-size="18" fill="#2b4c62" font-family="Atkinson Hyperlegible, sans-serif">4,2</text>`],
@@ -1332,10 +1348,10 @@ function figChartSymbols(){
   ['Sten under ytan',`<path d="M44 38H64M54 28V48" stroke="#111" stroke-width="2.2"/>`],
   ['Sten i vattenytan',`<path d="M44 38H64M54 28V48" stroke="#111" stroke-width="2.2"/>${[[48,32],[60,32],[48,44],[60,44]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#111"/>`).join('')}`],
   ['Grund med djup',`<ellipse cx="54" cy="38" rx="30" ry="18" fill="#a9cfe3" stroke="#4f86a6" stroke-dasharray="3 2"/><text x="54" y="43" text-anchor="middle" font-style="italic" font-size="14" fill="#2b4c62" font-family="Atkinson Hyperlegible, sans-serif">0,8</text>`],
-  ['Farled',`<line x1="8" y1="52" x2="100" y2="22" stroke="#333" stroke-width="1.6" stroke-dasharray="10 5"/>`],
-  ['Röd och grön prick',`<rect x="34" y="24" width="10" height="16" fill="#d0312d" stroke="#222"/><path d="M70 22 L78 40 L62 40Z" fill="#1a8a3e" stroke="#222"/>`],
-  ['Fyr med ljus',`<path d="M40 40 L84 22 A46 46 0 0 1 84 58Z" fill="#d6339a" opacity=".55"/><circle cx="40" cy="40" r="5" fill="#111"/>`],
-  ['Kummel',`<path d="M44 48 L54 28 L64 48Z" fill="none" stroke="#111" stroke-width="2.2"/><circle cx="54" cy="42" r="2" fill="#111"/>`],
+  ['Rekommenderad led',`<line x1="8" y1="30" x2="100" y2="30" stroke="#222" stroke-width="1.6"/><line x1="8" y1="50" x2="100" y2="50" stroke="#222" stroke-width="1.6" stroke-dasharray="9 5"/>`],
+  ['Röd och grön prick',`${chSpar(36,50,'#d0312d','can')}${chSpar(66,50,'#1a8a3e','cone')}`],
+  ['Fyr med ljus',`${chFlare(44,52)}`],
+  ['Kummel',`<circle cx="30" cy="40" r="2.6" fill="#111"/><text x="38" y="44" font-size="12" fill="#111" font-family="Atkinson Hyperlegible, sans-serif">Kummel</text>`],
   ['Land och ö',`<path d="M20 50 Q24 24 54 22 Q86 24 88 46 Q70 60 50 56 Q30 60 20 50Z" fill="#efe3b6" stroke="#6f6440"/>`],
   ['Ankringsförbud',`<path d="M54 22V50M44 30H64M42 42Q54 58 66 42" fill="none" stroke="#c0337a" stroke-width="2.2"/><line x1="36" y1="54" x2="72" y2="20" stroke="#c0337a" stroke-width="2.2"/>`],
   ['Kabel',`<path d="M8 40 q10 -10 20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#c0337a" stroke-width="2.2"/>`]];
@@ -1589,13 +1605,28 @@ ${roseWidget()}
 <li><b>Sjömärken och fyrar</b> är utritade med små symboler.</li></ul>
 <h3>Vanliga symboler</h3>
 <div class="fig">${figChartSymbols()}</div>
-<p class="foot" style="margin:0 0 10px">Symbolerna är förenklade. De exakta symbolerna finns i Kort 1.</p>
+<ul><li><b>Rekommenderad led:</b> en heldragen linje följer en led som är utmärkt med fasta märken. En streckad linje är en rekommenderad led utan fasta märken.</li>
+<li><b>Prickar</b> ritas som en lutande stav i märkets färg, med toppmärket svart överst och en liten ring vid foten. Ringen visar märkets exakta plats.</li>
+<li><b>Fyrar</b> har en droppformad ljusflamma, oftast magenta, och fyrens plats är punkten vid flammans spets.</li>
+<li><b>Kummel</b> och andra fasta märken på land står ofta utskrivna med namn eller ord vid en punkt eller en liten symbol. Hur symbolen ser ut varierar mellan korttyper.</li></ul>
+<p class="foot" style="margin:0 0 10px">Bilderna är förenklade. De exakta symbolerna och alla varianter finns i Kort 1.</p>
 <h3>Djupet beror på vattenståndet</h3>
 <p>Djupsiffrorna gäller vid kortets <b>referensnivå</b>, som står i kortets rubrik. När vattnet står lägre än referensnivån är det grundare än kortet visar, och när det står högre är det djupare. Hur vattenståndet varierar går vi igenom i lektionen om dimma och vattenstånd i väderavsnittet.</p>
-<h3>Skala</h3><p>Skalan visar hur mycket kortet har förminskat verkligheten. 1:50 000 betyder att 1 cm i kortet är 500 meter i verkligheten. Ett kort med <b>stor skala</b> (t.ex. 1:10 000) visar ett litet område i detalj. Använd alltid det mest detaljerade kortet där du kör, eftersom små stenar kan saknas i översiktskort.</p>
+<h3>Skala</h3><p>Skalan visar hur mycket kortet har förminskat verkligheten. 1:50 000 betyder att 1 cm i kortet är 500 meter i verkligheten. Ett kort med <b>stor skala</b> (t.ex. 1:25 000) visar ett litet område med många detaljer. Ett kort med <b>liten skala</b> (t.ex. 1:250 000) visar ett stort område med få detaljer, och där kan små stenar och grund saknas. Använd alltid det mest detaljerade kortet där du kör.</p>
+<h3>Korttyper och nummer</h3>
+<p>Sjöfartsverkets sjökort har nummer, och <b>antalet siffror</b> visar vilken sorts kort det är. Ju fler siffror, desto större skala och fler detaljer.</p>
+<div class="tablewrap"><table class="ptable"><tr><th>Siffror</th><th>Korttyp</th><th>Typisk skala</th><th>Används till</th></tr>
+<tr><td>1</td><td>Översiktskort</td><td>1:500 000 eller mindre</td><td>Planering och öppet hav</td></tr>
+<tr><td>2</td><td>Kustkort</td><td>1:250 000</td><td>Längs kusten och vid angöring</td></tr>
+<tr><td>3</td><td>Skärgårdskort</td><td>1:50 000</td><td>Navigering i skärgården</td></tr>
+<tr><td>4</td><td>Specialkort</td><td>1:25 000</td><td>Trånga eller trafikerade områden och hamnar</td></tr></table></div>
+<div class="fig">${figChartNest()}</div>
+<p>Ett mer detaljerat kort får samma siffror som kortet det ligger inom, plus en siffra till. Kort <b>6163</b> (Dalarö, 1:25 000) ligger alltså inom skärgårdskortet <b>616</b> (Nynäshamn–Dalarö, 1:50 000). Det är just de två korten som NFB:s övningssjökort för ostkusten bygger på. Vissa skärgårdskort har också mindre utsnitt i större skala, märkta med bokstäver.</p>
+<p><b>Båtsportkort</b> är en egen serie i A3-format för fritidsbåtar. De har namn efter området, till exempel "Stockholm Norra", och samma innehåll som de vanliga korten.</p>
 <h3>Lita lagom</h3><p>Mycket i skärgården är uppmätt för länge sedan. Utanför farlederna kan det finnas grund som inte är utmärkta. Håll dig till farlederna när du är osäker.</p>
 <p class="key"><b>Kom ihåg:</b> Alla symboler förklaras i häftet <b>Kort 1</b>. Ändringar i sjökorten publiceras av Sjöfartsverket i <b>Ufs</b> (Underrättelser för sjöfarande).</p>`,
- c:[{q:'Vad betyder ett litet + i sjökortet?',o:['En sten under vattenytan','Ett sjukhus','En hamn','En fyr'],a:0,e:'Undervattenssten. Håll avstånd.'},
+ c:[{q:'Vilket kort visar mest detaljer?',o:['6163','616','61','6'],a:0,e:'Fyra siffror är ett specialkort, oftast i skala 1:25 000.'},
+    {q:'Vad betyder ett litet + i sjökortet?',o:['En sten under vattenytan','Ett sjukhus','En hamn','En fyr'],a:0,e:'Undervattenssten. Håll avstånd.'},
     {q:'Kortet har skala 1:50 000. Hur långt är 2 cm i verkligheten?',o:['1 km','100 m','10 km','2 km'],a:0,e:'1 cm = 500 m.'},
     {q:'Varför ska du använda det mest detaljerade kortet?',o:['Små stenar och grund kan saknas i översiktskort','Det är billigare','Det har större text','Det krävs enligt lag'],a:0,e:'I översiktskort har man förenklat bort detaljer.'}]},
  {id:'f-1-2',t:'Plotter och elektroniska sjökort',b:`
@@ -2568,13 +2599,13 @@ const ENS_RB=bAB(ENS1,ENS2);
 function symMark(o){const x=cX(o.x),y=cY(o.y);
  const cone=(cx,cy,up)=>up?`<path d="M${cx-4} ${cy} L${cx+4} ${cy} L${cx} ${cy-6}Z" fill="#111"/>`:`<path d="M${cx-4} ${cy-6} L${cx+4} ${cy-6} L${cx} ${cy}Z" fill="#111"/>`;
  switch(o.k){
- case 'R':return `<rect x="${x-4}" y="${y-11}" width="8" height="11" fill="#d0312d" stroke="#222" stroke-width=".8"/><circle cx="${x}" cy="${y+2}" r="1.6" fill="#222"/><text x="${x+7}" y="${y-2}" class="mlab">${o.num}</text>`;
- case 'G':return `<path d="M${x} ${y-12} L${x+5} ${y} L${x-5} ${y}Z" fill="#1a8a3e" stroke="#222" stroke-width=".8"/><circle cx="${x}" cy="${y+2}" r="1.6" fill="#222"/><text x="${x+7}" y="${y-2}" class="mlab">${o.num}</text>`;
+ case 'R':return `${chSpar(x,y,'#d0312d','can')}<text x="${x+12}" y="${y-4}" class="mlab">${o.num}</text>`;
+ case 'G':return `${chSpar(x,y,'#1a8a3e','cone')}<text x="${x+12}" y="${y-4}" class="mlab">${o.num}</text>`;
  case 'N':return `<rect x="${x-3.5}" y="${y-10}" width="7" height="5" fill="#111"/><rect x="${x-3.5}" y="${y-5}" width="7" height="5" fill="#f2c200" stroke="#222" stroke-width=".5"/>${cone(x,y-11,true)}${cone(x,y-18,true)}<text x="${x+8}" y="${y-4}" class="clab">Kalvgrund</text>`;
  case 'E':return `<rect x="${x-3.5}" y="${y-10}" width="7" height="10" fill="#111"/><rect x="${x-3.5}" y="${y-7}" width="7" height="4" fill="#f2c200"/>${cone(x,y-11,true)}${cone(x,y-18,false)}<text x="${x}" y="${y-24}" class="clab" text-anchor="middle">Grundbrottet</text>`;
  case 'iso':return `<circle cx="${x}" cy="${y-5}" r="4.5" fill="#111"/><rect x="${x-4.5}" y="${y-6.5}" width="9" height="3" fill="#d0312d"/><text x="${x+8}" y="${y+2}" class="clab">Hällgrund</text>`;
  case 'sw':return `<circle cx="${x}" cy="${y-5}" r="5" fill="#fff" stroke="#d0312d" stroke-width="2"/><line x1="${x}" y1="${y-10}" x2="${x}" y2="${y}" stroke="#d0312d" stroke-width="2"/><text x="${x+9}" y="${y-2}" class="clab">Sjöviks angöring</text>`;
- case 'fyr':return `<path d="M${x} ${y} L${x+30} ${y-13} A32 32 0 0 1 ${x+30} ${y+13}Z" fill="#d6339a" opacity=".55"/><circle cx="${x}" cy="${y}" r="3.5" fill="#111"/><text x="${x-14}" y="${y+18}" class="clab">Sjöviks fyr</text><text x="${x-14}" y="${y+30}" class="mlab">Fl(3) 15s 25m 12M</text>`;
+ case 'fyr':return `${chFlare(x,y)}<text x="${x-14}" y="${y+18}" class="clab">Sjöviks fyr</text><text x="${x-14}" y="${y+30}" class="mlab">Fl(3) 15s 25m 12M</text>`;
  case 'kummel':return `<path d="M${x-6} ${y+5} L${x} ${y-7} L${x+6} ${y+5}Z" fill="none" stroke="#222" stroke-width="1.6"/><circle cx="${x}" cy="${y+1}" r="1.5" fill="#222"/><text x="${x+9}" y="${y+4}" class="clab">${o.n.replace('kummel ','')}</text>`;
  case 'udde':return `<circle cx="${x}" cy="${y}" r="2" fill="#222"/>`;
  case 'ens':return `<path d="M${x-5} ${y+4} L${x} ${y-6} L${x+5} ${y+4}Z" fill="#222"/>`;
