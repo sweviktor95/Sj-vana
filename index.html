@@ -132,6 +132,7 @@ input[type=range]{width:100%;accent-color:var(--sea)}
 .rosew .slider{grid-template-columns:50px 1fr 60px}
 .rosew .slider label{font-size:.9rem}
 .lbody h4{font-family:var(--display);font-size:1.15rem;margin:14px 0 4px}
+.k-txt{font-size:.95rem}
 .rose-q .btn{padding:4px 10px;min-height:32px;font-family:var(--mono);font-size:.85rem}
 .chartui{display:flex;flex-direction:column;gap:8px;min-width:0}
 .chartbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -1325,6 +1326,28 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figBoatCompass(h=45){
+ const C=150,R=92;let card='';
+ for(let d=0;d<360;d+=5){const t=d*Math.PI/180,L=d%30===0?14:d%10===0?9:5;card+=`<line x1="${(C+Math.sin(t)*R).toFixed(1)}" y1="${(C-Math.cos(t)*R).toFixed(1)}" x2="${(C+Math.sin(t)*(R-L)).toFixed(1)}" y2="${(C-Math.cos(t)*(R-L)).toFixed(1)}" stroke="#f4f1ea" stroke-width="${d%30===0?2:1}"/>`;
+  if(d%30===0){const n={0:'N',90:'O',180:'S',270:'V'}[d];card+=`<text x="${(C+Math.sin(t)*(R-26)).toFixed(1)}" y="${(C-Math.cos(t)*(R-26)+4).toFixed(1)}" text-anchor="middle" transform="rotate(${d} ${(C+Math.sin(t)*(R-26)).toFixed(1)} ${(C-Math.cos(t)*(R-26)).toFixed(1)})" font-family="JetBrains Mono, monospace" font-weight="700" font-size="${n?14:11}" fill="${n==='N'?'#ff6b5e':'#f4f1ea'}">${n||String(d).padStart(3,'0')}</text>`}}
+ return `<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="Båtkompass sedd ovanifrån"><rect width="300" height="300" rx="6" fill="var(--sea-soft)"/>
+ <path d="M150 8 Q236 70 230 292 L70 292 Q64 70 150 8Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+ <circle cx="${C}" cy="${C}" r="${R+12}" fill="#2a2f35"/><g class="kcard" transform="rotate(${-h} ${C} ${C})"><circle cx="${C}" cy="${C}" r="${R}" fill="#16324a"/>${card}</g>
+ <line x1="${C}" y1="${C-R-14}" x2="${C}" y2="${C-R+18}" stroke="#ffb238" stroke-width="4"/><circle cx="${C}" cy="${C}" r="4" fill="#ffb238"/>
+ <text x="${C}" y="24" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">FÖREN</text>
+ <text x="${C+18}" y="${C-R-2}" font-family="JetBrains Mono, monospace" font-size="10" fill="#c46d00">styrstreck</text></svg>`}
+function kompassWidget(){return `<div class="rosew" data-widget="kompass"><div class="fig">${figBoatCompass(45)}</div><div class="slider"><label>Sväng</label><input type="range" min="0" max="359" value="45" aria-label="Båtens kurs"><output>045°</output></div><p class="k-txt" style="margin:0"></p></div>`}
+function figLogg(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ return `<svg viewBox="0 0 330 200" width="330" height="200" role="img" aria-label="Logg under båten och loggens display"><rect width="330" height="200" rx="4" fill="var(--sea-soft)"/>
+ <rect y="70" width="330" height="130" fill="#2b77aa" opacity=".2"/><line x1="0" y1="70" x2="330" y2="70" stroke="var(--sea)"/>
+ <path d="M20 50 L250 50 Q262 80 220 112 L60 112 Q30 96 20 50Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+ <circle cx="130" cy="120" r="8" fill="none" stroke="var(--ink)" stroke-width="2"/>${[0,60,120,180,240,300].map(a=>`<line x1="130" y1="120" x2="${(130+Math.sin(a*Math.PI/180)*8).toFixed(1)}" y2="${(120-Math.cos(a*Math.PI/180)*8).toFixed(1)}" stroke="var(--ink)" stroke-width="1.5"/>`).join('')}
+ <line x1="130" y1="112" x2="130" y2="88" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="3 2"/>
+ ${[150,170,190].map(y=>`<line x1="300" y1="${y-14}" x2="230" y2="${y-14}" stroke="var(--sea)" stroke-width="1.5"/><path d="M236 ${y-18} L229 ${y-14} L236 ${y-10}" fill="none" stroke="var(--sea)" stroke-width="1.5"/>`).join('')}
+ ${T(324,192,'vattnet strömmar förbi',`fill="var(--sea)" text-anchor="end"`)}${T(60,150,'givare (skovelhjul)')}
+ <rect x="150" y="12" width="76" height="30" rx="4" fill="#0b1820"/><text x="188" y="33" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="16" fill="#d8f5e6">6,0 kn</text>${T(232,31,'loggen')}</svg>`}
+
 function figChartNest(){
  const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
  let s=`<svg viewBox="0 0 330 250" width="330" height="250" role="img" aria-label="Hur sjökortens nummer hänger ihop">`;
@@ -1474,7 +1497,9 @@ function figRoseFull(deg=45){
  return s}
 const DIRNAME=d=>['nord','nordost','ost','sydost','syd','sydväst','väst','nordväst'][Math.round(((d%360)+360)%360/45)%8];
 function roseWidget(){return `<div class="rosew" data-widget="rose"><div class="fig">${figRoseFull(45)}</div><div class="slider"><label>Kurs</label><input type="range" min="0" max="359" value="45" aria-label="Kurs i grader"><output>045°</output></div><div class="controls rose-q">${[0,45,90,135,180,225,270,315].map(d=>`<button class="btn" data-d="${d}">${String(d).padStart(3,'0')}</button>`).join('')}</div><p class="rose-txt" style="margin:0"></p></div>`}
-function initWidgets(root){root.querySelectorAll('[data-widget=restid]').forEach(w=>{const [a,b]=w.querySelectorAll('input'),o1=w.querySelector('.o1'),o2=w.querySelector('.o2'),t=w.querySelector('.rt-txt'),D=12;
+function initWidgets(root){root.querySelectorAll('[data-widget=kompass]').forEach(w=>{const inp=w.querySelector('input'),out=w.querySelector('output'),card=w.querySelector('.kcard'),txt=w.querySelector('.k-txt');
+ const up=()=>{const d=+inp.value,dd=String(d).padStart(3,'0');card.setAttribute('transform',`rotate(${-d} 150 150)`);out.textContent=dd+'°';txt.innerHTML=`Vid styrstrecket står <b>${dd}</b>. Fören pekar ${d%45===0?'':'ungefär '}<b>${DIRNAME(d)}</b>. Skalan står still mot norr, det är båten som vrider sig runt den.`};
+ inp.addEventListener('input',up);up()});root.querySelectorAll('[data-widget=restid]').forEach(w=>{const [a,b]=w.querySelectorAll('input'),o1=w.querySelector('.o1'),o2=w.querySelector('.o2'),t=w.querySelector('.rt-txt'),D=12;
  const fm=h=>{const m=Math.round(h*60);return m>=60?`${Math.floor(m/60)} h${m%60?` ${m%60} min`:''}`:`${m} min`};
  const up=()=>{const v=+a.value,c=+b.value,sog=v+c;o1.textContent=String(v).replace('.',',')+' kn';o2.textContent=c===0?'ingen':(c>0?'+':'−')+String(Math.abs(c)).replace('.',',')+' kn';
   t.innerHTML=sog<=0?'Strömmen är lika stark som din fart eller starkare. Du kommer inte fram.':`Resan är <b>12 M</b>. Loggen visar ${String(v).replace('.',',')} knop, men <b>SOG blir ${String(sog).replace('.',',')} knop</b>.<br>Räknar du med loggen tror du att resan tar ${fm(D/v)}. Den tar egentligen <b>${fm(D/sog)}</b>.`};
@@ -1718,20 +1743,41 @@ ${restidWidget()}
 ]},
 {t:'Instrumenten ombord',ls:[
  {id:'f-3-1',t:'Kompassen',b:`
-<p>Kompassen visar vilket håll fören pekar åt, i grader. Den fungerar även när GPS:en slutar fungera.</p>
-<h3>Varför kompassen inte visar exakt rätt</h3><ul><li><b>Missvisning:</b> kompassnålen pekar mot den magnetiska nordpolen, som inte ligger på samma ställe som den "riktiga" nordpolen på kartan. I Sverige är skillnaden några grader. Den står i sjökortets kompassros.</li>
+<p>En kompass är en magnet som alltid ställer in sig mot norr. På båtar sitter magneten under en rund skala med grader, <b>kompassrosen</b>. Den flyter i vätska så att den hålls lugn när båten gungar.</p>
+<h3>Så läser du av kompassen</h3>
+${kompassWidget()}
+<p>På kompassens kant sitter ett streck, <b>styrstrecket</b>, som är riktat rakt mot fören. Skalan står still och pekar mot norr medan båten vrider sig runt den. Det gradtal som står vid styrstrecket är därför den riktning fören pekar just nu. Det kallas <b>kompasskurs</b>.</p>
+<p>Ska du styra 045 svänger du tills 045 står vid styrstrecket, och håller det där. Dra i reglaget ovan och se hur skalan ligger still medan båten svänger.</p>
+<h3>Varför inte bara GPS:en?</h3>
+<ul><li>Kompassen visar <b>direkt</b> vart fören pekar, även när båten står still. GPS:en räknar ut kursen av hur båten har rört sig, så den släpar efter och blir osäker i låg fart.</li>
+<li>Kompassen behöver ingen ström och kan inte störas av satellitsignaler.</li>
+<li>Om plottern slocknar, i mörker eller i dimma, är kompassen och sjökortet det du har kvar.</li>
+<li>Med kompassen kan du styra en kurs du har räknat fram i sjökortet.</li></ul>
+<h3>Varför kompassen inte visar exakt rätt</h3><ul><li><b>Missvisning:</b> kompassen pekar mot den magnetiska nordpolen, som inte ligger på samma ställe som den "riktiga" nordpolen på kartan. I Sverige är skillnaden några grader. Den står i sjökortets kompassros.</li>
 <li><b>Deviation:</b> järn och elektronik i båten stör kompassen. Felet är olika stort beroende på åt vilket håll båten pekar. Det står i båtens <b>deviationstabell</b>.</li></ul>
 <p>Hur du räknar med de här felen lär du dig i navigationsmodulen.</p>
 <p>En <b>pejlkompass</b> är en liten handkompass som du siktar med mot ett föremål för att få dess riktning (bäring).</p>
 <p class="key"><b>Kom ihåg:</b> Lägg aldrig mobil, nycklar eller verktyg nära kompassen. Det ger fel.</p>`,
- c:[{q:'Vad orsakar deviation?',o:['Järn och elektronik i den egna båten','Jordens magnetfält','Vågorna','Solen'],a:0,e:'Missvisning kommer från jordens magnetfält.'},
+ c:[{q:'Var läser du av kompasskursen?',o:['Vid styrstrecket','Vid N på skalan','Mitt i kompassen','På plottern'],a:0,e:'Styrstrecket är riktat mot fören. Gradtalet där är vart fören pekar.'},
+    {q:'Båten ligger stilla vid en boj. Vilket instrument visar säkrast vart fören pekar?',o:['Kompassen','GPS:ens COG','Loggen','Ekolodet'],a:0,e:'COG räknas ut av hur båten rör sig och blir osäker när båten står still.'},
+    {q:'Vad orsakar deviation?',o:['Järn och elektronik i den egna båten','Jordens magnetfält','Vågorna','Solen'],a:0,e:'Missvisning kommer från jordens magnetfält.'},
     {q:'Var hittar du missvisningen?',o:['I sjökortets kompassros','På kompassen','I loggen','På motorn'],a:0,e:'Kompassrosen är den tryckta kompassen i sjökortet.'}]},
  {id:'f-3-2',t:'Logg, ekolod och GPS',b:`
-<ul><li><b>Loggen</b> är båtens hastighetsmätare. Den mäter farten genom vattnet. Om du åker med en ström går du fortare över botten än loggen visar.</li>
-<li><b>Ekolodet</b> mäter djupet under båten med ljudpulser. Kontrollera om det visar djupet från vattenytan, från givaren eller från båtens botten.</li>
-<li><b>GPS</b> (eller GNSS) räknar ut positionen från satelliter. Den ger också fart och kurs över botten. GPS:en kan störas, och då kan positionen hoppa.</li></ul>
-<p class="key"><b>Kom ihåg:</b> Jämför alltid det instrumenten säger med det du ser omkring dig.</p>`,
- c:[{q:'Vad mäter loggen?',o:['Farten genom vattnet','Djupet','Positionen','Vindstyrkan'],a:0,e:'Ekolodet mäter djupet, GPS:en positionen.'}]}
+<h3>Loggen: båtens hastighetsmätare</h3>
+<p>Loggen mäter hur fort båten går <b>genom vattnet</b>, i knop. Den fungerar som hastighetsmätaren i en bil, men mäter mot vattnet i stället för mot vägen. Under båten sitter en liten givare, oftast ett skovelhjul eller en ultraljudsgivare, som känner av hur fort vattnet strömmar förbi.</p>
+<div class="fig">${figLogg()}</div>
+<p>Namnet kommer från seglartiden. Då kastade man ut en träbit, en "logg", fäst i en lina med knutar på jämna avstånd. Man räknade hur många knutar som rann ut under en viss tid. Därför mäts fart på sjön fortfarande i <b>knop</b>.</p>
+<ul><li>Loggen visar ofta också hur lång sträcka du har kört.</li>
+<li>Utan ström är loggens fart densamma som GPS:ens fart över grund (SOG). Med ström skiljer de sig, som du lärde dig i lektionen om plottern.</li>
+<li>Många mindre båtar saknar logg. Då har du bara GPS:ens fart, SOG.</li>
+<li>Sjögräs eller påväxt på skovelhjulet kan göra att loggen visar för lite eller ingenting alls.</li></ul>
+<h3>Ekolodet</h3>
+<p>Ekolodet mäter djupet under båten med ljudpulser som studsar mot botten. Kontrollera om det visar djupet från vattenytan, från givaren eller från båtens botten. Det är skillnad på flera decimeter.</p>
+<h3>GPS och plotter</h3>
+<p>GPS:en (eller GNSS) räknar ut positionen från satelliter och ger fart och kurs över botten. Plottern ritar ut positionen på ett elektroniskt sjökort. Det är ett bra hjälpmedel, men det kan störas så att positionen hoppar, och det visar inte vart fören pekar när båten står still.</p>
+<p class="key"><b>Kom ihåg:</b> Kör inte bara efter plottern. Jämför med kompassen, sjökortet och det du ser omkring dig.</p>`,
+ c:[{q:'Vad mäter loggen?',o:['Farten genom vattnet','Djupet','Positionen','Vindstyrkan'],a:0,e:'Ekolodet mäter djupet, GPS:en positionen.'},
+    {q:'Loggen visar 0 knop fast båten uppenbart går framåt. Vad är en trolig orsak?',o:['Sjögräs eller påväxt på givaren','Strömmen är för stark','Kompassen är fel','GPS:en är avstängd'],a:0,e:'Skovelhjulet kan fastna. Rengör givaren.'}]}
 ]},
 {t:'Navigation',sim:'sim-dagpraktik',ls:[
  {id:'f-4-1',t:'Var är jag? Latitud och longitud',b:`
