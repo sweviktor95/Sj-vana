@@ -1325,6 +1325,21 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figSpringUt(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ const panel=(ox,title,rot)=>{let s=`<rect x="${ox+2}" y="0" width="156" height="250" rx="4" fill="var(--sea-soft)"/>${T(ox+80,16,title,'text-anchor="middle" font-weight="700"')}`;
+  s+=`<rect x="${ox+18}" y="30" width="22" height="200" fill="#b98f5a"/>`+T(ox+29,244,'brygga','text-anchor="middle"');
+  [70,120,170].forEach(y=>s+=`<line x1="${ox+150}" y1="${y}" x2="${ox+120}" y2="${y}" stroke="var(--muted)" stroke-width="1.8"/><path d="M${ox+125} ${y-4} L${ox+118} ${y} L${ox+125} ${y+4}" fill="none" stroke="var(--muted)" stroke-width="1.8"/>`);
+  s+=T(ox+112,200,'vind',`fill="var(--muted)"`);
+  s+=`<g transform="rotate(${rot} ${ox+46} 66)"><path d="M${ox+56} 60 Q${ox+72} 80 ${ox+70} 170 L${ox+42} 170 Q${ox+40} 80 ${ox+56} 60Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/></g>`;
+  s+=`<circle cx="${ox+45}" cy="68" r="5" fill="#ffd76a" stroke="var(--ink)"/>`;
+  s+=`<line x1="${ox+54}" y1="64" x2="${ox+40}" y2="150" stroke="#c0392b" stroke-width="2.5"/><circle cx="${ox+40}" cy="150" r="3" fill="#c0392b"/>`;
+  return s};
+ let s=`<svg viewBox="0 0 320 300" width="320" height="300" role="img" aria-label="Lägga ut från lovartsbrygga med en spring från fören">`;
+ s+=panel(0,'1. Kör sakta framåt',0)+panel(160,'2. Aktern svänger ut',-28);
+ s+=T(4,268,'Röd linje = spring från fören, snett bakåt.')+T(4,284,'Gul = fender vid fören.');
+ return s+`</svg>`}
+
 function figLandMarks(){
  const T=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">${t}</text>`;
  let s=`<svg viewBox="0 0 340 220" width="340" height="220" role="img" aria-label="Fasta sjömärken på land"><rect width="340" height="150" fill="var(--sea-soft)"/><rect y="150" width="340" height="70" fill="#2b77aa" opacity=".35"/>`;
@@ -1508,7 +1523,7 @@ LESSONS.forar=[
 <div class="fig">${figLovart()}</div>
 <p>Vinden träffar alltid <b>lovartssidan</b> först. Den andra sidan, <b>läsidan</b>, ligger i skydd. Det gäller både båten och allt annat i vattnet.</p>
 <ul><li>Bakom en ö är det lugnare vatten på läsidan. "Att gå in i lä" betyder att söka skydd bakom en ö eller udde när det blåser.</li>
-<li>En brygga där vinden blåser in mot bryggan kallas <b>lovartsbrygga</b>. Där trycker vinden båten mot bryggan. Att lägga till kan vara enkelt, eftersom vinden hjälper till att hålla båten på plats, men du behöver bra fendrar och låg fart så att båten inte slår i. Det svåra är oftast att <b>lägga ut</b>, eftersom du måste ta dig bort från bryggan mot vinden.</li>
+<li>En brygga där vinden blåser in mot bryggan kallas <b>lovartsbrygga</b>. Där trycker vinden båten mot bryggan. När du lägger till kan vinden hjälpa till att hålla båten på plats, men den kan också ge båten mycket fart och kraft in mot bryggan. Kom in långsamt och ha gott om fendrar ute. Att <b>lägga ut</b> är ofta det svåra, eftersom du måste ta dig bort från bryggan mot vinden. Hur man gör det finns i lektionen om förtöjning.</li>
 <li>Kliv i och ur en jolle eller badstege på läsidan, där båten skyddar mot vind och vågor.</li></ul>
 <p class="key"><b>Minnesregel:</b> <b>Styrbord = höger.</b> På vikingaskeppen satt styråran på höger sida, därav namnet. Lanternan på babord är röd, som portvin (port betyder babord på engelska).</p>`,
  c:[{q:'Det blåser från väster. På vilken sida av en ö hittar du lä?',o:['Öster om ön','Väster om ön','Norr om ön','Det är samma överallt'],a:0,e:'Vinden kommer från väster, så den skyddade sidan ligger mot öster.'},
@@ -1797,9 +1812,19 @@ ${restidWidget()}
  {id:'f-6-5',t:'Köra, förtöja och ankra',b:`
 <h3>Styra båten</h3><p>En båt har inga bromsar och svänger med aktern, inte med fören. Rodret fungerar bara när vatten strömmar förbi, så i mycket låg fart är båten svår att styra. Korta gaspådrag hjälper. Öva i lugnt väder på öppet vatten.</p>
 <h3>Lägga till vid en brygga</h3><ul><li>Kom in sakta, med fendrar ute och linorna redo.</li><li>Ha en lina i fören (förtamp) och en i aktern (aktertamp).</li><li><b>Springar</b> är linor som går snett och hindrar båten från att glida fram och tillbaka. De kallas <b>förspring</b> och <b>akterspring</b> efter var på båten de sitter.</li><li>Hoppa inte i land. Kliv när båten ligger still. Håll fingrar och fötter borta mellan båt och brygga.</li></ul>
+<h3>Lägga ut från en lovartsbrygga</h3>
+<p>När vinden trycker båten mot bryggan kan det vara svårt att komma loss. Ett vanligt sätt med motorbåt är att låta en spring vrida ut aktern:</p>
+<div class="fig">${figSpringUt()}</div>
+<ol><li>Lossa alla linor utom en <b>spring från fören</b> som går snett bakåt till bryggan.</li>
+<li>Sätt en <b>fender vid fören</b>, där båten kommer att trycka mot bryggan.</li>
+<li>Lägg i växeln <b>sakta framåt</b> och styr mot bryggan. Springen håller fören kvar, och aktern svänger ut från bryggan mot vinden.</li>
+<li>När aktern pekar en bra bit ut: lägg i friläge, släpp springen och <b>backa ut</b> med fören fri från bryggan.</li>
+<li>Gå sedan framåt och lägg ut när du är klar från bryggan.</li></ol>
+<p>Hur mycket gas och roder som behövs beror på båten och hur hårt det blåser. Öva gärna i lugnt väder först, och se till att ingen står mellan båten och bryggan.</p>
 <h3>Ankra</h3><ul><li>Välj en skyddad vik med bra botten (lera eller sand) och utan kablar.</li><li>Släpp ut lina 3–5 gånger djupet.</li><li>Backa sakta så att ankaret gräver ner sig. Kolla mot land att båten inte driver.</li></ul>
 <h3>Köra snålt (ecodriving)</h3><p>Kör antingen långsamt eller planande. Mittemellan, strax innan båten börjar plana, drar den mest bränsle och gör störst svallvågor.</p>`,
- c:[{q:'Hur mycket ankarlina ska du släppa ut?',o:['3–5 gånger djupet','Lika mycket som djupet','Halva djupet','Alltid 10 meter'],a:0,e:'Mer lina ger bättre fäste.'},
+ c:[{q:'Vinden trycker båten mot bryggan. Hur kan du lägga ut?',o:['Med en spring från fören och sakta framåt, så att aktern svänger ut','Gasa rakt framåt längs bryggan','Lossa alla linor och vänta','Backa rakt ut utan linor'],a:0,e:'Springen håller fören medan aktern vrids ut. Sedan backar du ut.'},
+    {q:'Hur mycket ankarlina ska du släppa ut?',o:['3–5 gånger djupet','Lika mycket som djupet','Halva djupet','Alltid 10 meter'],a:0,e:'Mer lina ger bättre fäste.'},
     {q:'Vad gör springarna?',o:['Hindrar båten från att glida fram och tillbaka','Håller fendrarna','Startar motorn','Mäter djupet'],a:0,e:'De går snett från båten till bryggan.'}]},
  {id:'f-6-6',t:'Stabilitet, brand och knopar',b:`
 <h3>Stabilitet</h3><p>En liten båt kan välta om alla står upp eller sitter på samma sida. Sitt ner och fördela vikten. Båtens <b>CE-skylt</b> visar hur många personer och hur mycket last den tål.</p>
