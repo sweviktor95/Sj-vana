@@ -130,6 +130,8 @@ input[type=range]{width:100%;accent-color:var(--sea)}
 .simtip{display:flex;flex-direction:column;gap:8px}
 .rosew{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
 .rosew .slider{grid-template-columns:50px 1fr 60px}
+.rosew .slider label{font-size:.9rem}
+.lbody h4{font-family:var(--display);font-size:1.15rem;margin:14px 0 4px}
 .rose-q .btn{padding:4px 10px;min-height:32px;font-family:var(--mono);font-size:.85rem}
 .chartui{display:flex;flex-direction:column;gap:8px;min-width:0}
 .chartbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -1323,6 +1325,24 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figCogGrund(){
+ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink)" ${o}>${t}</text>`;
+ const boat=(x,y,r)=>`<g transform="rotate(${r} ${x} ${y})"><path d="M${x} ${y-14} Q${x+7} ${y-4} ${x+6} ${y+12} L${x-6} ${y+12} Q${x-7} ${y-4} ${x} ${y-14}Z" fill="var(--ink)"/><line x1="${x}" y1="${y-16}" x2="${x}" y2="${y-62}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 3"/></g>`;
+ const panel=(ox,title,col,ok)=>{const cx=ox+80;let s=`<rect x="${ox+2}" y="0" width="156" height="330" rx="4" fill="var(--sea-soft)"/>${T(cx,16,title,'text-anchor="middle" font-weight="700"')}`;
+  s+=`<path d="M${cx-34} 40 C${cx-14} 26 ${cx+20} 28 ${cx+34} 40 C${cx+40} 52 ${cx+16} 60 ${cx-4} 58 C${cx-26} 56 ${cx-44} 50 ${cx-34} 40Z" fill="#e6d6a2" stroke="#8b7a4a"/>`+T(cx,48,'Ön','text-anchor="middle"');
+  s+=`<rect x="${ox+2}" y="292" width="156" height="38" fill="#e6d6a2"/>`+T(cx,316,'Hamnen','text-anchor="middle"');
+  s+=`<ellipse cx="${cx+44}" cy="150" rx="26" ry="20" fill="#a9cfe3" stroke="#4f86a6" stroke-dasharray="3 2"/><path d="M${cx+38} 150h12M${cx+44} 144v12" stroke="var(--ink)" stroke-width="1.4"/>`+T(cx+44,182,'grund','text-anchor="middle"');
+  [110,170,230].forEach(y=>s+=`<line x1="${ox+8}" y1="${y}" x2="${ox+34}" y2="${y}" stroke="var(--muted)" stroke-width="1.8"/><path d="M${ox+29} ${y-4} L${ox+36} ${y} L${ox+29} ${y+4}" fill="none" stroke="var(--muted)" stroke-width="1.8"/>`);
+  s+=T(ox+8,252,'ström',`fill="var(--muted)"`);
+  if(!ok){s+=`<line x1="${cx}" y1="282" x2="${cx+40}" y2="166" stroke="${col}" stroke-width="3"/><path d="M${cx+34} 170 L${cx+42} 162 L${cx+44} 174Z" fill="${col}"/>`+boat(cx,276,0);}
+  else{s+=`<line x1="${cx}" y1="282" x2="${cx}" y2="64" stroke="${col}" stroke-width="3"/><path d="M${cx-6} 72 L${cx} 60 L${cx+6} 72Z" fill="${col}"/>`+boat(cx,276,-22);}
+  return s};
+ let s=`<svg viewBox="0 0 320 400" width="320" height="400" role="img" aria-label="Ström som för båten mot ett grund, och hur man rättar kursen">`;
+ s+=panel(0,'Utan rättning','#c0392b',false)+panel(160,'Med rättning','#1d7a4a',true);
+ s+=T(4,348,'Streckad linje = vart fören pekar.')+T(4,364,'Färgad linje = COG, vart båten')+T(4,378,'faktiskt rör sig över botten.');
+ return s+`</svg>`}
+function restidWidget(){return `<div class="rosew" data-widget="restid"><div class="slider"><label>Logg</label><input type="range" min="3" max="25" step="0.5" value="6" aria-label="Fart genom vattnet i knop"><output class="o1">6 kn</output></div><div class="slider"><label>Ström</label><input type="range" min="-3" max="3" step="0.5" value="-1.5" aria-label="Ström i knop, minus är motström"><output class="o2"></output></div><p class="rt-txt" style="margin:0"></p></div>`}
+
 function figCog(){
  const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)" ${o}>${t}</text>`;
  let s=`<svg viewBox="0 0 320 300" width="320" height="300" role="img" aria-label="Kurs genom vattnet jämfört med kurs över grund"><defs><marker id="cgA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--muted)"/></marker><marker id="cgB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#c0392b"/></marker><marker id="cgC" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--sea)"/></marker></defs><rect width="320" height="300" rx="4" fill="var(--sea-soft)"/>`;
@@ -1368,7 +1388,11 @@ function figRoseFull(deg=45){
  return s}
 const DIRNAME=d=>['nord','nordost','ost','sydost','syd','sydväst','väst','nordväst'][Math.round(((d%360)+360)%360/45)%8];
 function roseWidget(){return `<div class="rosew" data-widget="rose"><div class="fig">${figRoseFull(45)}</div><div class="slider"><label>Kurs</label><input type="range" min="0" max="359" value="45" aria-label="Kurs i grader"><output>045°</output></div><div class="controls rose-q">${[0,45,90,135,180,225,270,315].map(d=>`<button class="btn" data-d="${d}">${String(d).padStart(3,'0')}</button>`).join('')}</div><p class="rose-txt" style="margin:0"></p></div>`}
-function initWidgets(root){root.querySelectorAll('[data-widget=rose]').forEach(w=>{const inp=w.querySelector('input'),out=w.querySelector('output'),arr=w.querySelector('.rose-arrow'),txt=w.querySelector('.rose-txt');
+function initWidgets(root){root.querySelectorAll('[data-widget=restid]').forEach(w=>{const [a,b]=w.querySelectorAll('input'),o1=w.querySelector('.o1'),o2=w.querySelector('.o2'),t=w.querySelector('.rt-txt'),D=12;
+ const fm=h=>{const m=Math.round(h*60);return m>=60?`${Math.floor(m/60)} h${m%60?` ${m%60} min`:''}`:`${m} min`};
+ const up=()=>{const v=+a.value,c=+b.value,sog=v+c;o1.textContent=String(v).replace('.',',')+' kn';o2.textContent=c===0?'ingen':(c>0?'+':'−')+String(Math.abs(c)).replace('.',',')+' kn';
+  t.innerHTML=sog<=0?'Strömmen är lika stark som din fart eller starkare. Du kommer inte fram.':`Resan är <b>12 M</b>. Loggen visar ${String(v).replace('.',',')} knop, men <b>SOG blir ${String(sog).replace('.',',')} knop</b>.<br>Räknar du med loggen tror du att resan tar ${fm(D/v)}. Den tar egentligen <b>${fm(D/sog)}</b>.`};
+ a.addEventListener('input',up);b.addEventListener('input',up);up()});root.querySelectorAll('[data-widget=rose]').forEach(w=>{const inp=w.querySelector('input'),out=w.querySelector('output'),arr=w.querySelector('.rose-arrow'),txt=w.querySelector('.rose-txt');
  const up=()=>{const d=+inp.value,dd=String(d).padStart(3,'0');arr.setAttribute('transform',`rotate(${d} 150 150)`);out.textContent=dd+'°';txt.innerHTML=`Kurs <b>${dd}°</b> är ${d%45===0?'':'ungefär '}<b>${DIRNAME(d)}</b>. Fören pekar dit pilen pekar.`};
  inp.addEventListener('input',up);w.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.d;up()});up()})}
 
@@ -1516,8 +1540,22 @@ ${roseWidget()}
 <li>Är SOG högre än loggen har du medström. Är den lägre har du motström.</li>
 <li>Vill du hålla en viss linje över botten, till exempel mellan två grund, är det COG du ska titta på.</li></ul>
 <p class="key"><b>Kom ihåg:</b> Kompass och logg beskriver båten i vattnet. COG och SOG beskriver båten över botten. I mycket låg fart hoppar COG och SOG, eftersom små GPS-fel blir stora i förhållande till sträckan.</p>
+<h3>Det är COG och SOG som tar dig mellan öar och hamnar</h3>
+<p>Tänk dig ett rullband på en flygplats. Du går i din vanliga takt, det är loggen. Men golvet under dig rör sig också, och det är det som avgör hur fort du kommer fram till gaten. På sjön är vattnet rullbandet och botten är flygplatsgolvet. Öar, hamnar och grund ligger still på botten, så det är <b>rörelsen över botten</b> som räknas när du ska någonstans.</p>
+<h4>1. Restiden räknas med SOG</h4>
+<p>Ska du till en hamn 12 M bort och loggen visar 6 knop verkar det ta 2 timmar. Har du 1,5 knop motström går du bara 4,5 knop över botten, och då tar det 2 timmar och 40 minuter. Bränsle, ankomsttid och hur mycket dagsljus du har kvar beror alltså på SOG, inte på loggen.</p>
+${restidWidget()}
+<p class="foot" style="margin:0">Dra i reglagen. Minus på strömmen betyder motström, plus betyder medström.</p>
+<h4>2. Grunden bryr sig bara om COG</h4>
+<div class="fig">${figCogGrund()}</div>
+<p><b>Utan rättning:</b> du styr med fören rakt mot ön, men strömmen kommer från sidan. Båten glider snett, och COG (den röda linjen) går rakt mot grundet fast fören hela tiden pekar mot ön.</p>
+<p><b>Med rättning:</b> du styr lite <b>upp mot strömmen</b>, alltså åt det håll strömmen kommer ifrån. Fören pekar då snett, men COG (den gröna linjen) går rakt mot ön och klarar grundet.</p>
+<ul><li>Titta på COG-linjen i plottern. Den visar vart du faktiskt är på väg.</li><li>Pekar COG-linjen mot ett grund eller en udde ska du rätta kursen, även om fören pekar rätt.</li><li>Ju lägre fart du har, desto mer påverkar strömmen. En långsam båt kan driva ordentligt.</li></ul>
+<p class="key"><b>Sammanfattning:</b> Kompass och logg säger vad båten gör i vattnet. COG och SOG säger vad som händer på riktigt mellan öarna: vart du kommer och när du är framme.</p>
 <details class="extra"><summary>Överkurs: raster och vektor</summary><p>Rasterkort är inskannade papperskort. Vektorkort är byggda av lager med information som du kan klicka på. På vektorkort kan information döljas om du ställer in plottern fel.</p></details>`,
- c:[{q:'Vad står SOG för?',o:['Speed Over Ground, fart över grund','Speed Of Gear, motorns fart','Ström och grund','Signal On GPS'],a:0,e:'SOG är farten över botten. COG är kursen över botten.'},
+ c:[{q:'Det är 10 M till hamnen. Loggen visar 5 knop och du har 1 knop motström. Hur lång tid tar resan?',o:['2 h 30 min','2 h','1 h 40 min','3 h'],a:0,e:'SOG = 5 − 1 = 4 knop. 10 ÷ 4 = 2,5 h.'},
+    {q:'Fören pekar mot en ö, men COG-linjen i plottern pekar mot ett grund bredvid. Vad gör du?',o:['Rättar kursen upp mot strömmen tills COG pekar fritt från grundet','Fortsätter, fören pekar ju mot ön','Ökar farten utan att ändra kurs','Stänger av plottern'],a:0,e:'Det är COG som visar vart du faktiskt är på väg.'},
+    {q:'Vad står SOG för?',o:['Speed Over Ground, fart över grund','Speed Of Gear, motorns fart','Ström och grund','Signal On GPS'],a:0,e:'SOG är farten över botten. COG är kursen över botten.'},
     {q:'Kompassen visar 090 men plottern visar COG 100. Vad betyder det?',o:['Ström eller vind trycker båten så att den rör sig mot 100 över botten','Kompassen är trasig','Du kör baklänges','Plottern visar alltid 10 grader för mycket'],a:0,e:'Fören pekar mot 090, men båten glider snett och rör sig mot 100 över botten.'},
     {q:'Du zoomar in mycket i plottern. Vad gäller?',o:['Kortet blir inte noggrannare, även om det ser detaljerat ut','Du ser alla stenar','Positionen blir exaktare','Plottern varnar alltid för grund'],a:0,e:'Det kallas överzoomning.'},
     {q:'Vad visar COG?',o:['Hur båten faktiskt rör sig över botten','Hur fort motorn går','Vart fören pekar','Vindens riktning'],a:0,e:'Course over ground.'}]}
