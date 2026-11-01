@@ -1336,7 +1336,7 @@ function figTwoScales(){
  s+=`<rect x="${x0}" y="112" width="${120*k}" height="36" fill="var(--surface)" stroke="#7a4f8a"/>`;
  for(let d=-5;d<=114;d+=5){if(d<0)continue;const x=x0+(d+6)*k;if(x>x0+120*k)continue;s+=`<line x1="${x}" y1="112" x2="${x}" y2="${d%10?120:128}" stroke="#7a4f8a"/>`;if(d%30===0)s+=T(x,142,String(d).padStart(3,'0'),`text-anchor="middle" fill="#7a4f8a"`)}
  const xc=x0+96*k;s+=`<line x1="${xc}" y1="26" x2="${xc}" y2="152" stroke="#c0392b" stroke-width="2.5"/>`+T(xc+4,82,'096 i kortet',`fill="#c0392b" font-weight="700"`)+T(xc-6,166,'090 på kompassen',`fill="#c0392b" font-weight="700" text-anchor="middle"`);
- s+=`<line x1="${x0}" y1="66" x2="${x0+6*k}" y2="112" stroke="#7a4f8a" stroke-dasharray="3 2"/>`+T(x0,188,'Kompassens noll ligger redan 6° åt höger.')+T(x0,204,'Därför visar den 6 för lite för samma riktning.');
+ s+=`<line x1="${x0}" y1="66" x2="${x0+6*k}" y2="112" stroke="#7a4f8a" stroke-dasharray="3 2"/>`+T(x0,188,'Kompassens noll ligger redan 6° åt höger.')+T(x0,204,'Därför blir dess siffra 6 lägre för samma riktning.');
  return s+`</svg>`}
 
 function figMissvisning(){
@@ -1931,20 +1931,20 @@ ${kompassWidget()}
 <ul><li><b>Från kompassen till kortet</b> (KK → MK → RK): lägg till deviationen och sedan missvisningen. <b>Ost är plus och väst är minus.</b></li>
 <li><b>Från kortet till kompassen</b> (RK → MK → KK): gå trappan åt andra hållet och <b>byt tecken</b>. Ost dras ifrån och väst läggs till.</li></ul>
 <h3>Förstå i stället för att memorera</h3>
-<p>Det går att resonera sig fram till plus eller minus. Med <b>ostlig</b> missvisning pekar kompassen lite åt höger om den riktiga norr. Kompassen börjar alltså räkna sina grader en bit åt höger, och därför visar den <b>för lite</b> för samma riktning.</p>
+<p>Det går att resonera sig fram till plus eller minus. Sjökortet räknar sina grader från den geografiska nordpolen, och kompassen räknar från den magnetiska. Med <b>ostlig</b> missvisning ligger den magnetiska nordpolen lite åt höger, sett från Sverige. Kompassen börjar alltså räkna en bit åt höger, och därför blir kompassens siffra <b>lägre</b> för samma riktning.</p>
 <div class="fig">${figTwoScales()}</div>
-<ul><li><b>Ost:</b> kompassen visar för lite. Kompass till kort: lägg till. Kort till kompass: dra ifrån.</li>
-<li><b>Väst:</b> kompassen visar för mycket. Kompass till kort: dra ifrån. Kort till kompass: lägg till.</li></ul>
-<p>Samma sak gäller deviationen. Är den 3° O visar kompassen 3 grader för lite på den kursen.</p>
-<p>Du kan också vända på det: jämfört med kompassen visar sjökortet 6 grader <b>mer</b>. Det betyder inte att kortet är fel. Sjökortet visar alltid den rätta riktningen, och det är kompassen som är förskjuten. Att säga att kortet visar "för mycket" är bara ett sätt att tänka när du räknar om.</p>
-<p class="key"><b>Fråga dig själv:</b> visar kompassen för lite eller för mycket? Då vet du om du ska lägga till eller dra ifrån, utan att behöva komma ihåg någon regel.</p>
+<ul><li><b>Ost:</b> kompassens siffra blir lägre. Kompass till kort: lägg till. Kort till kompass: dra ifrån.</li>
+<li><b>Väst:</b> kompassens siffra blir högre. Kompass till kort: dra ifrån. Kort till kompass: lägg till.</li></ul>
+<p>Deviationen räknar du på samma sätt. Är den 3° O blir kompassens siffra 3 grader lägre på den kursen.</p>
+<p><b>Vem har rätt?</b> Både sjökortet och kompassen. De räknar bara från olika nordpoler, ungefär som två linjaler som börjar på olika ställen: båda mäter rätt, men siffrorna blir olika. Missvisningen är alltså inget fel, bara skillnaden mellan de två startpunkterna. Det enda som verkligen är ett fel är <b>deviationen</b>, eftersom det är båten som stör kompassen.</p>
+<p class="key"><b>Fråga dig själv:</b> blir kompassens siffra lägre eller högre än sjökortets? Då vet du om du ska lägga till eller dra ifrån, utan att behöva komma ihåg någon regel.</p>
 <h3>Exempel 1: Från sjökortet till kompassen</h3>
 <p>Du ska köra från hamnen till fyren. Hur ska du styra på kompassen?</p>
 <div class="fig">${figExChart()}</div>
 <p><b>Steg 1. Mät kursen i sjökortet.</b> Lägg gradskivan mellan hamnen och fyren. Den visar <b>096°</b>. Det är rättvisande kurs, RK.</p>
-<p><b>Steg 2. Ta bort missvisningen.</b> Kompassrosen i kortet säger 6° O. Med ostlig missvisning visar kompassen för lite, så du drar ifrån: 096 − 6 = <b>090°</b>. Det är magnetisk kurs, MK.</p>
+<p><b>Steg 2. Ta bort missvisningen.</b> Kompassrosen i kortet säger 6° O. Med ostlig missvisning blir kompassens siffra lägre, så du drar ifrån: 096 − 6 = <b>090°</b>. Det är magnetisk kurs, MK.</p>
 <div class="fig">${figDevCard(90)}</div>
-<p><b>Steg 3. Ta bort deviationen.</b> Leta upp 090° i din deviationstabell. Där står 3° O, så kompassen visar 3 grader för lite på den kursen. Dra ifrån igen: 090 − 3 = <b>087°</b>. Det är kompasskurs, KK.</p>
+<p><b>Steg 3. Ta bort deviationen.</b> Leta upp 090° i din deviationstabell. Där står 3° O, så kompassens siffra blir 3 grader lägre på den kursen. Dra ifrån igen: 090 − 3 = <b>087°</b>. Det är kompasskurs, KK.</p>
 <div class="fig">${figBoatCompass(87)}</div>
 <p><b>Steg 4. Styr.</b> Sväng tills 087 står vid styrstrecket. Då går båten 096° i sjökortet.</p>
 <p class="key"><b>Kontrollera baklänges:</b> 087 + 3 (dev O) = 090, och 090 + 6 (miss O) = 096. Stämmer med kortet.</p>
