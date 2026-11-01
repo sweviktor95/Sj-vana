@@ -1326,6 +1326,27 @@ function simPraktik(night){
 }
 
 // ================= lesson figures =================
+function figSectorChart(){
+ const L={x:170,y:46},rad=a=>a*Math.PI/180;
+ // bearings FROM the light (direction rays point): white 180±6, red 186..222 (to the west side), green 138..174
+ const pt=(b,r)=>[L.x+Math.sin(rad(b))*r,L.y-Math.cos(rad(b))*r];
+ const arc=(b1,b2,r,col,w)=>{const[a1x,a1y]=pt(b1,r),[a2x,a2y]=pt(b2,r);return `<path d="M${a1x.toFixed(1)} ${a1y.toFixed(1)} A${r} ${r} 0 0 1 ${a2x.toFixed(1)} ${a2y.toFixed(1)}" fill="none" stroke="${col}" stroke-width="${w}"/>`};
+ const lim=b=>{const[x,y]=pt(b,250);return `<line x1="${L.x}" y1="${L.y}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#333" stroke-width="1" stroke-dasharray="5 4"/>`};
+ const lab=(b,r,t,c)=>{const[x,y]=pt(b,r);return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="12" fill="${c}">${t}</text>`};
+ const boat=(b,r,c,txt)=>{const[x,y]=pt(b,r);return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><path d="M0 -9 Q5 -3 4 8 L-4 8 Q-5 -3 0 -9Z" fill="#0f2433"/><circle cx="0" cy="-17" r="5" fill="${c}" stroke="#333"/></g><text x="${(x+10).toFixed(1)}" y="${(y+4).toFixed(1)}" font-family="JetBrains Mono, monospace" font-size="10" fill="#1d1d1d">${txt}</text>`};
+ let s=`<svg viewBox="0 0 340 300" width="340" height="300" role="img" aria-label="Sektorfyr i sjökortet"><rect width="340" height="300" rx="4" fill="#f7fafc"/>`;
+ // land and shoals
+ s+=`<path d="M0 0 H340 V40 Q300 52 250 40 Q210 30 190 46 Q170 60 150 44 Q120 26 80 38 Q40 50 0 40Z" fill="#efe3b6" stroke="#6f6440"/>`;
+ s+=`<ellipse cx="96" cy="190" rx="44" ry="26" fill="#a9cfe3" stroke="#4f86a6" stroke-dasharray="3 2"/><path d="M90 190h12M96 184v12" stroke="#111" stroke-width="1.4"/>`;
+ s+=`<ellipse cx="252" cy="180" rx="42" ry="24" fill="#a9cfe3" stroke="#4f86a6" stroke-dasharray="3 2"/><path d="M246 180h12M252 174v12" stroke="#111" stroke-width="1.4"/>`;
+ s+=lim(138)+lim(174)+lim(186)+lim(222);
+ s+=arc(186,222,92,'#d0312d',6)+arc(174,186,92,'#e9c84a',6)+arc(138,174,92,'#1a8a3e',6);
+ s+=lab(204,108,'R','#d0312d')+lab(180,108,'W','#8a6d00')+lab(156,108,'G','#1a8a3e');
+ s+=`<path d="M${L.x} ${L.y} C${L.x+4} ${L.y-10} ${L.x+14} ${L.y-22} ${L.x+22} ${L.y-20} C${L.x+28} ${L.y-16} ${L.x+16} ${L.y-5} ${L.x} ${L.y}Z" fill="#d6339a" opacity=".75"/><circle cx="${L.x}" cy="${L.y}" r="3" fill="#111"/>`;
+ s+=`<text x="${L.x+28}" y="${L.y+18}" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#1d1d1d">Oc WRG 6s 12m 9M</text>`;
+ s+=boat(212,200,'#ff4a3d','ser rött')+boat(180,230,'#fff6dc','ser vitt')+boat(150,205,'#3bd16f','ser grönt');
+ return s+`</svg>`}
+
 function figBoatCompass(h=45){
  const C=150,R=92;let card='';
  for(let d=0;d<360;d+=5){const t=d*Math.PI/180,L=d%30===0?14:d%10===0?9:5;card+=`<line x1="${(C+Math.sin(t)*R).toFixed(1)}" y1="${(C-Math.cos(t)*R).toFixed(1)}" x2="${(C+Math.sin(t)*(R-L)).toFixed(1)}" y2="${(C-Math.cos(t)*(R-L)).toFixed(1)}" stroke="#f4f1ea" stroke-width="${d%30===0?2:1}"/>`;
@@ -1635,6 +1656,14 @@ ${roseWidget()}
 <li><b>Fyrar</b> har en droppformad ljusflamma, oftast magenta, och fyrens plats är punkten vid flammans spets.</li>
 <li><b>Kummel</b> och andra fasta märken på land står ofta utskrivna med namn eller ord vid en punkt eller en liten symbol. Hur symbolen ser ut varierar mellan korttyper.</li></ul>
 <p class="foot" style="margin:0 0 10px">Bilderna är förenklade. De exakta symbolerna och alla varianter finns i Kort 1.</p>
+<h3>Sektorfyrar</h3>
+<p>En vanlig fyr lyser likadant åt alla håll. En <b>sektorfyr</b> lyser med <b>olika färger åt olika håll</b>. Vilken färg du ser beror på var du befinner dig. Sektorfyrar är mycket vanliga i den svenska skärgården och används för att leda båtar rätt.</p>
+<div class="fig">${figSectorChart()}</div>
+<ul><li><b>Vit sektor:</b> här går leden. Ser du vitt ljus ligger du rätt.</li>
+<li><b>Röd och grön sektor:</b> du har kommit ut på sidan av leden, mot grundare vatten. Styr tillbaka tills du ser vitt igen.</li>
+<li>I sjökortet ritas sektorerna som <b>färgade bågar</b> runt fyren, med bokstäverna W (vit), R (röd) och G (grön). <b>Streckade linjer</b> visar var gränserna mellan sektorerna går.</li>
+<li>Vid fyren står ljusets karaktär, till exempel <code>Oc WRG 6s 12m 9M</code>: ockulterande, vitt, rött och grönt, 6 sekunders period, 12 meter högt och syns 9 sjömil.</li></ul>
+<p>På dagen syns inte färgerna. Sektorerna är därför främst till hjälp i mörker, men du kan ändå använda sjökortet för att se var leden går. Hur du navigerar efter sektorfyrar övas i kustskepparkursen och i nattpraktiken.</p>
 <h3>Djupet beror på vattenståndet</h3>
 <p>Djupsiffrorna gäller vid kortets <b>referensnivå</b>, som står i kortets rubrik. När vattnet står lägre än referensnivån är det grundare än kortet visar, och när det står högre är det djupare. Hur vattenståndet varierar går vi igenom i lektionen om dimma och vattenstånd i väderavsnittet.</p>
 <h3>Skala</h3><p>Skalan visar hur mycket kortet har förminskat verkligheten. 1:50 000 betyder att 1 cm i kortet är 500 meter i verkligheten. Ett kort med <b>stor skala</b> (t.ex. 1:25 000) visar ett litet område med många detaljer. Ett kort med <b>liten skala</b> (t.ex. 1:250 000) visar ett stort område med få detaljer, och där kan små stenar och grund saknas. Använd alltid det mest detaljerade kortet där du kör.</p>
@@ -1650,7 +1679,8 @@ ${roseWidget()}
 <p><b>Båtsportkort</b> är en egen serie i A3-format för fritidsbåtar. De har namn efter området, till exempel "Stockholm Norra", och samma innehåll som de vanliga korten.</p>
 <h3>Lita lagom</h3><p>Mycket i skärgården är uppmätt för länge sedan. Utanför farlederna kan det finnas grund som inte är utmärkta. Håll dig till farlederna när du är osäker.</p>
 <p class="key"><b>Kom ihåg:</b> Alla symboler förklaras i häftet <b>Kort 1</b>. Ändringar i sjökorten publiceras av Sjöfartsverket i <b>Ufs</b> (Underrättelser för sjöfarande).</p>`,
- c:[{q:'Vilket kort visar mest detaljer?',o:['6163','616','61','6'],a:0,e:'Fyra siffror är ett specialkort, oftast i skala 1:25 000.'},
+ c:[{q:'Du ser rött ljus från en sektorfyr. Vad betyder det?',o:['Du har kommit ut på sidan av leden, mot grundare vatten','Du ligger mitt i leden','Fyren är trasig','Du ska stanna'],a:0,e:'Den vita sektorn visar leden. Styr tillbaka tills du ser vitt.'},
+    {q:'Vilket kort visar mest detaljer?',o:['6163','616','61','6'],a:0,e:'Fyra siffror är ett specialkort, oftast i skala 1:25 000.'},
     {q:'Vad betyder ett litet + i sjökortet?',o:['En sten under vattenytan','Ett sjukhus','En hamn','En fyr'],a:0,e:'Undervattenssten. Håll avstånd.'},
     {q:'Kortet har skala 1:50 000. Hur långt är 2 cm i verkligheten?',o:['1 km','100 m','10 km','2 km'],a:0,e:'1 cm = 500 m.'},
     {q:'Varför ska du använda det mest detaljerade kortet?',o:['Små stenar och grund kan saknas i översiktskort','Det är billigare','Det har större text','Det krävs enligt lag'],a:0,e:'I översiktskort har man förenklat bort detaljer.'}]},
@@ -2088,7 +2118,7 @@ LESSONS.kust=[
     {q:'Vad betyder <code>Al WR</code>?',o:['Ljuset växlar mellan vitt och rött','Vitt och rött i olika sektorer','Vit blixt följd av mörker','Rött fast ljus'],a:0,e:'Alternerande ljus byter färg i samma riktning.'},
     {q:'Vad är perioden för <code>Fl(2) 6s</code>?',o:['6 sekunder för hela cykeln med två blixtar','2 sekunder mellan blixtarna','6 sekunder mörker efter varje blixt','12 sekunder'],a:0,e:'Perioden räknas från början av en grupp till början av nästa.'}]},
  {id:'k-3-3',t:'Sektorfyrar, ledfyrar och ensfyrar',sim:'sim-nattpraktik',b:`
-<div class="fig">${sectorFig()}</div>
+<div class="fig">${figSectorChart()}</div>
 <p>En <b>sektorfyr</b> visar olika färger i olika riktningar. Den vita sektorn leder normalt genom farleden, och röd och grön sektor varnar för grundare vatten på sidorna. I sjökortet står t.ex. <code>Oc WRG 6s 12m 9-6M</code>.</p>
 <p>Sektorgränserna i fyrlistor anges som <b>bäringar från sjön mot fyren</b>, alltså hur du ser fyren. I sjökortet är sektorerna ritade med tunna linjer och bokstäver.</p>
 <p>I gränsen mellan två sektorer finns en smal zon där färgen är osäker och kan växla. Lita inte på gränsen. Håll dig väl inne i den vita sektorn.</p>
