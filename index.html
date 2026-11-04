@@ -91,6 +91,9 @@ code{font-family:var(--mono);font-size:.9em;background:var(--sea-soft);padding:1
 .tag{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}
 .tag.ok{color:var(--good)}.tag.no{color:var(--bad)}
 .foot{font-size:.8rem;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:4px 0;font:inherit;font-size:.8rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start;text-align:left}
+.linkbtn:hover{color:var(--ink,inherit)}
+.linkbtn.warn{color:#c0392b;font-weight:600}
 canvas{display:block;width:100%;max-width:100%;border-radius:4px;touch-action:manipulation}
 .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
 .readout div{background:var(--sea-soft);border-radius:4px;padding:8px 10px}
@@ -2712,6 +2715,7 @@ function courseView(id){
   const c=COURSES.find(x=>x.id===id); if(!c) return home();
   const m=META[id]||{beh:'',areas:[],sims:[]}, mods=LESSONS[id], b=best[c.id];
   let body='';
+  const hasAny=flatLessons(id).some(l=>prog[l.id])||best[id]!=null||best['exam-'+id]!=null;
   if(mods){
     const p=courseProgress(id), nxt=nextLessonId(id);
     body+=`<div class="track"><i style="width:${p.total?p.done/p.total*100:0}%"></i></div>
@@ -2732,6 +2736,7 @@ function courseView(id){
    <div class="controls"><label for="len">Provträning</label><select id="len"><option value="10">10 frågor</option><option value="99" selected>Alla (${c.qs.length})</option></select><button class="btn" id="startq">Fri provträning</button>${EXAMS[id]?'<button class="btn primary" id="nfbbtn">Provläge enligt NFB</button>':''}<span class="best">${b!=null?`Bästa: ${b} %`:''}</span></div>
    ${m.sims.length?`<div><span class="eyebrow">Simulatorer för kursen</span></div><div class="courses">${m.sims.map(simCard).join('')}</div>`:''}
    <p class="foot" style="margin:0">Underlag: ${m.src}. Kontrollera alltid aktuella krav hos NFB eller Transportstyrelsen.</p>
+   ${hasAny?'<button class="linkbtn" id="resetc">Återställ framstegen i kursen och börja om</button>':''}
   </section>`;
   $('#back').onclick=()=>go('');
   $('#startq').onclick=()=>start(id,+$('#len').value);
@@ -2740,6 +2745,9 @@ function courseView(id){
   $('#cont')?.addEventListener('click',()=>go('lek-'+id+'-'+(nextLessonId(id)||flatLessons(id)[0].id)));
   app.querySelectorAll('[data-l]').forEach(el=>el.onclick=()=>go('lek-'+id+'-'+el.dataset.l));
   app.querySelectorAll('[data-sim]').forEach(el=>el.onclick=()=>go(el.dataset.sim));
+  const rb=$('#resetc');if(rb){let sure=false;rb.onclick=()=>{
+    if(!sure){sure=true;rb.classList.add('warn');rb.textContent='Säker? Klicka igen för att nollställa alla lektioner och provresultat i kursen';setTimeout(()=>{if(rb.isConnected&&sure){sure=false;rb.classList.remove('warn');rb.textContent='Återställ framstegen i kursen och börja om'}},6000);return}
+    flatLessons(id).forEach(l=>delete prog[l.id]);saveProg();delete best[id];delete best['exam-'+id];saveBest();courseView(id);window.scrollTo(0,0)}}
 }
 
 function lessonView(cid,lid){
